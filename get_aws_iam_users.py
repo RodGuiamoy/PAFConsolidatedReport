@@ -43,6 +43,8 @@ def main(aws_environment):
                 'CreateDate': created_date,
                 'AccountID': account_id
             })
+            
+            print (f"{username},{employee_id},{email},{created_date},{account_id}")
 
 if __name__ == "__main__":
     aws_environment = sys.argv[1]
