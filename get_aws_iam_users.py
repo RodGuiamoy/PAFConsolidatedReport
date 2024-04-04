@@ -2,7 +2,7 @@ import boto3
 
 # Initialize boto3 clients
 iam = boto3.client('iam')
-cloudtrail = boto3.client('cloudtrail')
+# cloudtrail = boto3.client('cloudtrail')
 
 def get_user_tags(username):
     """Retrieve user tags and return EmployeeID and Email if available."""
