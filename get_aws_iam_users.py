@@ -1,6 +1,7 @@
 import boto3
 import csv
 import sys
+from datetime import datetime
 
 # Initialize boto3 clients
 iam = boto3.client('iam')
@@ -16,8 +17,14 @@ def main(aws_environment):
     users = iam.list_users()['Users']
     account_id = boto3.client('sts').get_caller_identity().get('Account')
     
+    # Get the current date
+    current_date = datetime.now()
+
+    # Format the date to MMddyyyy
+    formatted_date = current_date.strftime('%m%d%Y')
+    
     # Define the CSV file name
-    csv_file_name = f"AWS_{aws_environment}.csv"
+    csv_file_name = f"AWS_{aws_environment}_{formatted_date}.csv"
     
     # Define the header names based on the data we are collecting
     headers = ['UserName', 'EmployeeID', 'Email', 'CreateDate', 'AccountID']
