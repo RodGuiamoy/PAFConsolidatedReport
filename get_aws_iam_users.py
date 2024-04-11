@@ -23,6 +23,9 @@ def main(aws_environment):
     # Format the date to MMddyyyy
     formatted_date = current_date.strftime('%m%d%Y')
     
+    # Using str.replace() to remove spaces
+    aws_environment = aws_environment.replace(" ", "")
+    
     # Define the CSV file name
     csv_file_name = f"AWS_{aws_environment}_{formatted_date}.csv"
     
