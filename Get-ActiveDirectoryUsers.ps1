@@ -1,2 +1,1 @@
-# Your PowerShell script goes here
-Write-Output "Hello, World!"
+Get-ADUser -Filter * -Properties SamAccountName, DisplayName, EmailAddress, AccountExpirationDate"
