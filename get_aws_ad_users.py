@@ -1,6 +1,9 @@
 import boto3
 import time
 import sys
+import csv
+from datetime import datetime
+
 
 # Function to wait for command to complete and return the result
 def wait_for_command_to_complete(instance_id, command_id):
@@ -20,8 +23,9 @@ def wait_for_command_to_complete(instance_id, command_id):
 # region = 'ap-southeast-1'
 # instance_id = 'i-077367418569315f2'
 
-region = sys.argv[1]
-instance_id = sys.argv[2]
+aws_ad_environment = sys.argv[1]
+region = sys.argv[2]
+instance_id = sys.argv[3]
 
 # Initialize a Boto3 session
 session = boto3.Session(region_name=region)
@@ -47,6 +51,44 @@ command_id = response['Command']['CommandId']
 # Wait for the command to complete and display the output
 invocation_response = wait_for_command_to_complete(instance_id, command_id)
 adUsersStr = invocation_response['StandardOutputContent'].splitlines()
-print(type(adUsersStr))
-print(adUsersStr)
+
+
+# Get the current date
+current_date = datetime.now()
+
+# Format the date to MMddyyyy
+formatted_date = current_date.strftime('%m%d%Y')
+
+# Using str.replace() to remove spaces
+aws_ad_environment = aws_ad_environment.replace(" ", "")
+
+# Define the CSV file name
+csv_file_name = f"AD{aws_ad_environment}_{formatted_date}.csv"
+
+# Define the header names based on the data we are collecting
+headers = ['SamAccountName', 'DisplayName', 'EmailAddress', 'AccountExpirationDate']
+
+# Open a new CSV file
+with open(csv_file_name, mode='w', newline='') as file:
+    writer = csv.DictWriter(file, fieldnames=headers)
+
+    for adUser in adUsersStr:
+        adUserProperties = adUser.split(',')
+        
+        SamAccountName = adUserProperties[0]
+        DisplayName = adUserProperties[1]
+        Email = adUserProperties[2]
+        AccountExpirationDate = adUserProperties[3]
+        
+        # Write the user's details to the CSV
+        writer.writerow({
+            'SamAccountName': SamAccountName,
+            'DisplayName': DisplayName,
+            'EmailAddress': Email,
+            'AccountExpirationDate': AccountExpirationDate
+        })
+        
+        print(f"{SamAccountName},{DisplayName},{Email},{AccountExpirationDate}")
+
+    
 
