@@ -43,6 +43,7 @@ response = ssm.send_command(
     InstanceIds=[instance_id],
     DocumentName='AWS-RunPowerShellScript',
     Parameters={'commands': [powershell_script]},
+    TimeoutSeconds=300
 )
 
 # Extract command ID
