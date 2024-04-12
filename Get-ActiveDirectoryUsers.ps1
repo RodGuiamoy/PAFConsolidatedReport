@@ -1,5 +1,5 @@
-$properties = 'SamAccountName', 'EmailAddress', 'EmailAddress'
-$adUsers = Get-ADUser -Filter * -Properties $properties
+$properties = 'SamAccountName', 'EmailAddress', 'EmployeeID'
+$adUsers = Get-ADUser -Filter * -Properties $properties | Where-Object EmailAddress -ne $null
 $adUsers | % {
     $user = $_
     $properties | % {
