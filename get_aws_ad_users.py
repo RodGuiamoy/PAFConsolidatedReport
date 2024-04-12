@@ -72,6 +72,9 @@ headers = ['Domain', 'SamAccountName', 'DisplayName', 'EmailAddress', 'AccountEx
 # Open a new CSV file
 with open(csv_file_name, mode='w', newline='') as file:
     writer = csv.DictWriter(file, fieldnames=headers)
+    
+    # Write the header
+    writer.writeheader()
 
     for ad_user in ad_users_str:
         ad_user_properties = ad_user.split(',')
