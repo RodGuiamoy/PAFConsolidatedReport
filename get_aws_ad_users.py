@@ -46,5 +46,7 @@ command_id = response['Command']['CommandId']
 
 # Wait for the command to complete and display the output
 invocation_response = wait_for_command_to_complete(instance_id, command_id)
-print(type(invocation_response['StandardOutputContent']))
+adUsersStr = invocation_response['StandardOutputContent'].splitlines()
+print(type(adUsersStr))
+print(adUsersStr)
 
