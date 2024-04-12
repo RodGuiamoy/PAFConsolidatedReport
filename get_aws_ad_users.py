@@ -67,7 +67,7 @@ domain = domain.replace(" ", "")
 csv_file_name = f"AD{domain}_{formatted_date}.csv"
 
 # Define the header names based on the data we are collecting
-headers = ['Domain', 'SamAccountName', 'DisplayName', 'EmailAddress', 'AccountExpirationDate']
+headers = ['Domain', 'SamAccountName', 'EmailAddress', 'EmployeeID']
 
 # Open a new CSV file
 with open(csv_file_name, mode='w', newline='') as file:
@@ -78,11 +78,6 @@ with open(csv_file_name, mode='w', newline='') as file:
 
     for ad_user in ad_users_str:
         ad_user_properties = ad_user.split(',')
-        
-        # sam_account_name = ad_user_properties[0]
-        # display_name = ad_user_properties[1]
-        # email = ad_user_properties[2]
-        # account_expiration_date = ad_user_properties[3]
         
         # Initialize variables with None or default values
         sam_account_name = None
