@@ -86,30 +86,30 @@ with open(csv_file_name, mode='w', newline='') as file:
         
         # Initialize variables with None or default values
         sam_account_name = None
-        display_name = None
+        # display_name = None
         email = None
-        account_expiration_date = None
+        employee_id = None
 
         # Conditional assignments
         if ad_user_properties[0].strip():
             sam_account_name = ad_user_properties[0].strip()
         if len(ad_user_properties) > 1 and ad_user_properties[1].strip():
-            display_name = ad_user_properties[1].strip()
+            email = ad_user_properties[1].strip()
         if len(ad_user_properties) > 2 and ad_user_properties[2].strip():
-            email = ad_user_properties[2].strip()
-        if len(ad_user_properties) > 3 and ad_user_properties[3].strip():
-            account_expiration_date = ad_user_properties[3].strip()
+            employee_id = ad_user_properties[2].strip()
+        # if len(ad_user_properties) > 3 and ad_user_properties[3].strip():
+        #     account_expiration_date = ad_user_properties[3].strip()
         
         # Write the user's details to the CSV
         writer.writerow({
             'Domain': domain,
             'SamAccountName': sam_account_name,
-            'DisplayName': display_name,
             'EmailAddress': email,
-            'AccountExpirationDate': account_expiration_date
+            'EmployeeID': employee_id
         })
         
-        print(f"{domain},{sam_account_name},{display_name},{email},{account_expiration_date}")
+        # print(f"{domain},{sam_account_name},{display_name},{email},{account_expiration_date}")
+        print(f"{domain},{sam_account_name},{email},{employee_id}")
 
     
 

@@ -1,4 +1,4 @@
-$properties = 'SamAccountName', 'DisplayName', 'EmailAddress', 'AccountExpirationDate'
+$properties = 'SamAccountName', 'EmailAddress', 'EmailAddress'
 $adUsers = Get-ADUser -Filter * -Properties $properties
 $adUsers | % {
     $user = $_
