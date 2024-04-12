@@ -23,7 +23,7 @@ def wait_for_command_to_complete(instance_id, command_id):
 # region = 'ap-southeast-1'
 # instance_id = 'i-077367418569315f2'
 
-aws_ad_environment = sys.argv[1]
+domain = sys.argv[1]
 region = sys.argv[2]
 instance_id = sys.argv[3]
 
@@ -50,7 +50,7 @@ command_id = response['Command']['CommandId']
 
 # Wait for the command to complete and display the output
 invocation_response = wait_for_command_to_complete(instance_id, command_id)
-adUsersStr = invocation_response['StandardOutputContent'].splitlines()
+ad_users_str = invocation_response['StandardOutputContent'].splitlines()
 
 
 # Get the current date
@@ -60,35 +60,36 @@ current_date = datetime.now()
 formatted_date = current_date.strftime('%m%d%Y')
 
 # Using str.replace() to remove spaces
-aws_ad_environment = aws_ad_environment.replace(" ", "")
+domain = domain.replace(" ", "")
 
 # Define the CSV file name
-csv_file_name = f"AD{aws_ad_environment}_{formatted_date}.csv"
+csv_file_name = f"AD{domain}_{formatted_date}.csv"
 
 # Define the header names based on the data we are collecting
-headers = ['SamAccountName', 'DisplayName', 'EmailAddress', 'AccountExpirationDate']
+headers = ['Domain', 'SamAccountName', 'DisplayName', 'EmailAddress', 'AccountExpirationDate']
 
 # Open a new CSV file
 with open(csv_file_name, mode='w', newline='') as file:
     writer = csv.DictWriter(file, fieldnames=headers)
 
-    for adUser in adUsersStr:
-        adUserProperties = adUser.split(',')
+    for ad_user in ad_users_str:
+        ad_user_properties = ad_user.split(',')
         
-        SamAccountName = adUserProperties[0]
-        DisplayName = adUserProperties[1]
-        Email = adUserProperties[2]
-        AccountExpirationDate = adUserProperties[3]
+        sam_account_name = ad_user_properties[0]
+        display_name = ad_user_properties[1]
+        email = ad_user_properties[2]
+        account_expiration_date = ad_user_properties[3]
         
         # Write the user's details to the CSV
         writer.writerow({
-            'SamAccountName': SamAccountName,
-            'DisplayName': DisplayName,
-            'EmailAddress': Email,
-            'AccountExpirationDate': AccountExpirationDate
+            'Domain': domain,
+            'SamAccountName': sam_account_name,
+            'DisplayName': display_name,
+            'EmailAddress': email,
+            'AccountExpirationDate': account_expiration_date
         })
         
-        print(f"{SamAccountName},{DisplayName},{Email},{AccountExpirationDate}")
+        print(f"{domain},{sam_account_name},{display_name},{email},{account_expiration_date}")
 
     
 
