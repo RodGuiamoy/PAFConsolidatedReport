@@ -89,6 +89,8 @@ new_content = headers + original_content
 # Step 3: Write the updated content back to the file
 with open(csv_file_name, 'w') as file:
     file.writelines(new_content)
+    
+print(new_content)
 
 # Open a new CSV file
 #with open(csv_file_name, mode='w', newline='') as file:
