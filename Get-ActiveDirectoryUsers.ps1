@@ -1,5 +1,5 @@
 $properties = 'SamAccountName', 'EmailAddress', 'EmployeeID'
-$headers = 'Domain,' + $($properties -jon ",")
+$headers = 'Domain,' + $($properties -join ",")
 Write-Host "$headers"
 
 $adUsers = Get-ADUser -Filter * -Properties $properties
