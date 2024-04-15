@@ -17,6 +17,7 @@ for file in csv_files:
         encoding = result['encoding']
 
     df = pd.read_csv(file, encoding=encoding)
+    print(df)
     dfs.append(df)
     
 # [pd.read_csv(file) for file in csv_files]
