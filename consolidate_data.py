@@ -30,7 +30,7 @@ writer = pd.ExcelWriter(f"Consolidated System Access Information - {current_date
 # Write each dataframe to a separate sheet in the Excel file, naming sheets after the filename
 for i, df in enumerate(dfs):
     # Extract file name without the extension and use it as sheet name
-    sheet_name = csv_files[i].rsplit('.', 1)[0]
+    sheet_name = csv_files[i].rsplit('_', 1)[0]
     df.to_excel(writer, sheet_name=sheet_name, index=False)
 
 # Save the Excel file
