@@ -75,8 +75,7 @@ headers = 'Domain,SamAccountName,EmailAddress,EmployeeID'
 
 #get output from s3
 # s3_client = boto3.client('s3')
-s3_download_path = f'{command_id}/{instance_id}/awsrunPowerShellScript/0.awsrunPowerShellScript/
-stdout'
+s3_download_path = f'{command_id}/{instance_id}/awsrunPowerShellScript/0.awsrunPowerShellScript/stdout'
 s3.download_file(target_bucket, s3_download_path, csv_file_name)
 
 # Step 1: Read the existing content
