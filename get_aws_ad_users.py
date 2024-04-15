@@ -37,13 +37,16 @@ ssm = session.client('ssm')
 # Load the PowerShell script from a file
 with open('Get-ActiveDirectoryUsers.ps1', 'r') as file:
     powershell_script = file.read()
+    
+target_bucket = f'infrasre-adreport-raw-{domain.lower()}'
 
 # Send the command
 response = ssm.send_command(
     InstanceIds=[instance_id],
     DocumentName='AWS-RunPowerShellScript',
     Parameters={'commands': [powershell_script]},
-    TimeoutSeconds=300
+    TimeoutSeconds=300,
+    OutputS3BucketName=target_bucket
 )
 
 # Extract command ID
