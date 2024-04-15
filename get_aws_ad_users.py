@@ -79,7 +79,7 @@ s3_download_path = f'{command_id}/{instance_id}/awsrunPowerShellScript/0.awsrunP
 s3.download_file(target_bucket, s3_download_path, csv_file_name)
 
 # Step 1: Read the existing content
-with open(csv_file_name, 'r') as file:
+with open(csv_file_name, 'r', encoding="utf-8") as file:
     original_content = file.readlines()
 
 # Step 2: Convert original_content from list to string if necessary
