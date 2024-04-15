@@ -71,28 +71,30 @@ domain = domain.replace(" ", "")
 csv_file_name = f"AD{domain}_{formatted_date}.csv"
 
 # Define the header names based on the data we are collecting
-headers = 'Domain,SamAccountName,EmailAddress,EmployeeID\n'
+# headers = 'Domain,SamAccountName,EmailAddress,EmployeeID\n'
 
 #get output from s3
 # s3_client = boto3.client('s3')
 s3_download_path = f'{command_id}/{instance_id}/awsrunPowerShellScript/0.awsrunPowerShellScript/stdout'
 s3.download_file(target_bucket, s3_download_path, csv_file_name)
 
-# Step 1: Read the existing content
-with open(csv_file_name, 'rb') as file:
-    original_content = file.readlines()
+# # Step 1: Read the existing content
+# with open(csv_file_name, 'rb') as file:
+#     original_content = file.readlines()
 
-# Step 2: Convert original_content from list to string if necessary
-original_content = ''.join(original_content)  # Joins all elements of the list into a single string
+# # Step 2: Convert original_content from list to string if necessary
+# original_content = ''.join(original_content)  # Joins all elements of the list into a single string
 
-# Step 3: Add the header line at the beginning
-new_content = headers + original_content
+# # Step 3: Add the header line at the beginning
+# new_content = headers + original_content
 
-# Step 3: Write the updated content back to the file
-with open(csv_file_name, 'w') as file:
-    file.writelines(new_content)
+# # Step 3: Write the updated content back to the file
+# with open(csv_file_name, 'w') as file:
+#     file.writelines(new_content)
     
-print(new_content)
+with open(csv_file_name, "r") as file:
+    for line in file:
+        print(line, end="")
 
 # Open a new CSV file
 #with open(csv_file_name, mode='w', newline='') as file:

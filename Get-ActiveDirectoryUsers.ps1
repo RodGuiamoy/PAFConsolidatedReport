@@ -1,4 +1,7 @@
 $properties = 'SamAccountName', 'EmailAddress', 'EmployeeID'
+$headers = 'Domain,' + $($properties -jon ",")
+Write-Host "$headers"
+
 $adUsers = Get-ADUser -Filter * -Properties $properties
 $domain = (Get-CimInstance Win32_ComputerSystem).Domain
 
