@@ -1,5 +1,6 @@
 import os
 import pandas as pd
+import chardet
 from datetime import datetime
 
 # List all files in the current working directory
@@ -9,7 +10,16 @@ files = os.listdir()
 csv_files = [file for file in files if file.endswith('.csv')]
 
 # Read each CSV file and store them in a list
-dfs = [pd.read_csv(file) for file in csv_files]
+dfs = []
+for file in csv_files:
+    with open(file, 'rb') as f:
+        result = chardet.detect(f.read())  # Detect the encoding
+        encoding = result['encoding']
+
+    df = pd.read_csv(file, encoding=encoding)
+    dfs.append(df)
+    
+# [pd.read_csv(file) for file in csv_files]
 
 current_date = datetime.now().strftime('%m%d%Y')
 
