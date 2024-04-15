@@ -70,68 +70,11 @@ domain = domain.replace(" ", "")
 # Define the CSV file name
 csv_file_name = f"AD{domain}_{formatted_date}.csv"
 
-# Define the header names based on the data we are collecting
-# headers = 'Domain,SamAccountName,EmailAddress,EmployeeID\n'
 
 #get output from s3
-# s3_client = boto3.client('s3')
 s3_download_path = f'{command_id}/{instance_id}/awsrunPowerShellScript/0.awsrunPowerShellScript/stdout'
 s3.download_file(target_bucket, s3_download_path, csv_file_name)
-
-# # Step 1: Read the existing content
-# with open(csv_file_name, 'rb') as file:
-#     original_content = file.readlines()
-
-# # Step 2: Convert original_content from list to string if necessary
-# original_content = ''.join(original_content)  # Joins all elements of the list into a single string
-
-# # Step 3: Add the header line at the beginning
-# new_content = headers + original_content
-
-# # Step 3: Write the updated content back to the file
-# with open(csv_file_name, 'w') as file:
-#     file.writelines(new_content)
     
-with open(csv_file_name, "r") as file:
+with open(csv_file_name, "rb") as file:
     for line in file:
         print(line, end="")
-
-# Open a new CSV file
-#with open(csv_file_name, mode='w', newline='') as file:
-    # writer = csv.DictWriter(file, fieldnames=headers)
-    
-    # # Write the header
-    # writer.writeheader()
-
-    # for ad_user in ad_users_str:
-    #     ad_user_properties = ad_user.split(',')
-        
-    #     # Initialize variables with None or default values
-    #     sam_account_name = None
-    #     # display_name = None
-    #     email = None
-    #     employee_id = None
-
-    #     # Conditional assignments
-    #     if ad_user_properties[0].strip():
-    #         sam_account_name = ad_user_properties[0].strip()
-    #     if len(ad_user_properties) > 1 and ad_user_properties[1].strip():
-    #         email = ad_user_properties[1].strip()
-    #     if len(ad_user_properties) > 2 and ad_user_properties[2].strip():
-    #         employee_id = ad_user_properties[2].strip()
-    #     # if len(ad_user_properties) > 3 and ad_user_properties[3].strip():
-    #     #     account_expiration_date = ad_user_properties[3].strip()
-        
-    #     # Write the user's details to the CSV
-    #     writer.writerow({
-    #         'Domain': domain,
-    #         'SamAccountName': sam_account_name,
-    #         'EmailAddress': email,
-    #         'EmployeeID': employee_id
-    #     })
-        
-    #     # print(f"{domain},{sam_account_name},{display_name},{email},{account_expiration_date}")
-    #     print(f"{domain},{sam_account_name},{email},{employee_id}")
-
-    
-
