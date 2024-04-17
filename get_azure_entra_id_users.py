@@ -48,7 +48,7 @@ csv_file_name = f"AZ{azure_tenant}_{formatted_date}.csv"
 
 # Define column headers that match the dictionary keys
 headers = [
-    "displayName", "givenName", "id", "jobTitle", "mail",
+    "businessPhones","displayName", "givenName", "id", "jobTitle", "mail",
     "mobilePhone", "officeLocation", "preferredLanguage", "surname", "userPrincipalName"
 ]
 
