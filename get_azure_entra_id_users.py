@@ -1,9 +1,12 @@
 import requests
 import sys
+from datetime import datetime
+import csv
 
 azure_client_id = sys.argv[1]
 azure_client_secret = sys.argv[2]
-tenant_id = sys.argv[3]
+azure_tenant = sys.argv[3]
+tenant_id = sys.argv[4]
 
 data = {
 "scope":"https://graph.microsoft.com/.default",
@@ -34,3 +37,27 @@ while cont:
     
 print(type(full_user_list))
 
+# Get the current date
+current_date = datetime.now()
+
+# Format the date to MMddyyyy
+formatted_date = current_date.strftime('%m%d%Y')
+
+# Define the CSV file name
+csv_file_name = f"AZ{azure_tenant}_{formatted_date}.csv"
+
+# Define column headers that match the dictionary keys
+headers = [
+    "displayName", "givenName", "id", "jobTitle", "mail",
+    "mobilePhone", "officeLocation", "preferredLanguage", "surname", "userPrincipalName"
+]
+
+# Open a new CSV file
+with open(csv_file_name, mode='w', newline='') as file:
+    writer = csv.DictWriter(file, fieldnames=headers)
+    
+    # Write the header
+    writer.writeheader()
+    
+    for user in full_user_list:
+        writer.writerow(user)
