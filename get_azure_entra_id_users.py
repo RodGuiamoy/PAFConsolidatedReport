@@ -1,12 +1,15 @@
 import requests
+import sys
 
-# api_id = 
+azure_client_id = sys.argv[1]
+azure_client_secret = sys.argv[2]
+tenant_id = sys.argv[3]
 
 data = {
 "scope":"https://graph.microsoft.com/.default",
 "grant_type":"client_credentials",
-"client_id":api_id,
-"client_secret":api_secret
+"client_id":azure_client_id,
+"client_secret":azure_client_secret
 }
 
 headers = {'Content-Type': 'application/x-www-form-urlencoded'}
@@ -28,3 +31,5 @@ while cont:
         cont = False
 
     full_user_list.extend(response['value'])
+    
+print(full_user_list)
