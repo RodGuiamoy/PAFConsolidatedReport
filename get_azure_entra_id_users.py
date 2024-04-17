@@ -32,4 +32,5 @@ while cont:
 
     full_user_list.extend(response['value'])
     
-print(full_user_list)
+print(type(full_user_list))
+
