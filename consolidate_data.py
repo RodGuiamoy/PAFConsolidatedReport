@@ -8,6 +8,7 @@ files = os.listdir()
 
 # Filter out the .csv files
 csv_files = [file for file in files if file.endswith('.csv')]
+csv_files.sort()  # This sorts the list in place
 
 # Read each CSV file and store them in a list
 dfs = []
