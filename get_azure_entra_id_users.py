@@ -60,4 +60,7 @@ with open(csv_file_name, mode='w', newline='') as file:
     writer.writeheader()
     
     for user in full_user_list:
+        
+        # Process 'businessPhones' list to a string representation
+        user['businessPhones'] = ', '.join(user['businessPhones']) if user['businessPhones'] else None
         writer.writerow(user)
