@@ -34,8 +34,6 @@ while cont:
         cont = False
 
     full_user_list.extend(response['value'])
-    
-print(type(full_user_list))
 
 # Get the current date
 current_date = datetime.now()
