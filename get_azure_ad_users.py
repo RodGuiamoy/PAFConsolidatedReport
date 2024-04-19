@@ -25,9 +25,10 @@ def generate_token(azure_client_id, azure_client_secret):
 
 azure_client_id = sys.argv[1]
 azure_client_secret = sys.argv[2]
-subscription_id = sys.argv[3]
-resource_group = sys.argv[4]
-ad_server_name = sys.argv[5]
+domain = sys.argv[3]
+subscription_id = sys.argv[4]
+resource_group = sys.argv[5]
+ad_server_name = sys.argv[6]
 
 base_url = "https://management.azure.com"
 
@@ -91,10 +92,10 @@ current_date = datetime.now()
 formatted_date = current_date.strftime('%m%d%Y')
 
 # Using str.replace() to remove spaces
-resource_group = resource_group.replace(" ", "")
+domain = domain.replace(" ", "")
 
 # Define the CSV file name
-csv_file_name = f"AD{resource_group}_{formatted_date}.csv"
+csv_file_name = f"AD{domain}_{formatted_date}.csv"
     
 # Open the file in write mode ('w' mode), this will create the file if it doesn't exist
 # If the file already exists, it will be overwritten
