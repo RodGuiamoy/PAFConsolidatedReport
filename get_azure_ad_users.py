@@ -74,7 +74,9 @@ if location:
         time.sleep(10)
 
     run_result_response = requests.get(location, headers=headers).json()["value"]
-    print(run_result_response[0]["message"])
+    
+    ad_users = run_result_response[0]["message"]
+    print(type(ad_users))
 else:
     print("\n=======================================================")
     print(f"RunCommand not sent successfully in {resource_group.upper()}!")
