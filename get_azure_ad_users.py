@@ -2,6 +2,7 @@ import requests
 import time
 import boto3
 import sys
+from datetime import datetime
 
 def generate_token(azure_client_id, azure_client_secret):
 
@@ -81,7 +82,24 @@ else:
     print("\n=======================================================")
     print(f"RunCommand not sent successfully in {resource_group.upper()}!")
     print("=======================================================")
+    exit()
+    
+# Get the current date
+current_date = datetime.now()
 
+# Format the date to MMddyyyy
+formatted_date = current_date.strftime('%m%d%Y')
 
+# Using str.replace() to remove spaces
+resource_group = resource_group.replace(" ", "")
+
+# Define the CSV file name
+csv_file_name = f"AD{resource_group}_{formatted_date}.csv"
+    
+# Open the file in write mode ('w' mode), this will create the file if it doesn't exist
+# If the file already exists, it will be overwritten
+with open(csv_file_name, 'w') as file:
+    # Write the content of the string variable to the file
+    file.write(ad_users)
 
 # set_expiry_and_tag(sys.argv[1],sys.argv[2], sys.argv[3], sys.argv[4])
