@@ -44,6 +44,7 @@ def default_case():
 
 external_tool_name = sys.argv[1]
 api_key = sys.argv[2]
+api_key = api_key.replace("\n","").strip()
 
 # Define the switch-case dictionary
 external_tool_functions = {
