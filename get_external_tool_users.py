@@ -1,18 +1,17 @@
 import sys
 import requests
 import time
+import csv
 
 def get_pingdom_users(api_key):
     return api_key
 def get_pagerduty_users(api_key):
-    print(api_key)
-    
+   
     base_url = "https://api.pagerduty.com/users"
     headers = {
 	    "Content-Type": "application/json",
 	    "Authorization": f"Token token={api_key}"
 	}
-	
 	
     offset = 0
     params = {
@@ -30,8 +29,33 @@ def get_pagerduty_users(api_key):
         params['offset'] = offset
         response = requests.get(base_url, headers=headers, params=params).json()
         user_list.extend(response['users'])
+        
+    # Define the CSV file name
+    csv_file_name = f"PagerDuty.csv"
  
-    return user_list
+    # Define the header names based on the data we are collecting
+    headers = ['id', 'name', 'email']
+    # Open a new CSV file
+    with open(csv_file_name, mode='w', newline='') as file:
+        writer = csv.DictWriter(file, fieldnames=headers)
+        
+        # Write the header
+        writer.writeheader()
+        
+        # Iterate over each user and write their information as a row in the CSV
+        for user in user_list:
+            id = user['id']
+            name = user['name']
+            email = user['email']
+            
+            # Write the user's details to the CSV
+            writer.writerow({
+                'id': id,
+                'name': name,
+                'email': email
+            })
+            
+            print(f"{user['id']}, {user['name']}, {user['email']}") 
 
 def get_sendgrid_users(api_key):
     return api_key
@@ -58,10 +82,7 @@ external_tool_functions = {
 # Check if choice exists in the dictionary
 if external_tool_name in external_tool_functions:
     # Call the function corresponding to the choice
-    user_list = external_tool_functions[external_tool_name](api_key)
+    external_tool_functions[external_tool_name](api_key)
 else:
     # If choice doesn't exist, call the default case function
-    default_case()
-    
-for user in user_list:
-    print(f"{user['id']}, {user['name']}, {user['email']}")
+    default_case()   
