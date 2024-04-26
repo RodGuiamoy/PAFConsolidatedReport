@@ -58,9 +58,10 @@ external_tool_functions = {
 # Check if choice exists in the dictionary
 if external_tool_name in external_tool_functions:
     # Call the function corresponding to the choice
-    result = external_tool_functions[external_tool_name](api_key)
+    user_list = external_tool_functions[external_tool_name](api_key)
 else:
     # If choice doesn't exist, call the default case function
     default_case()
     
-print(result)
+for user in user_list:
+    print(f"{user['id']}, {user['name']}, {user['email']}")
