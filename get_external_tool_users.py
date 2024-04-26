@@ -4,7 +4,41 @@ import time
 import csv
 
 def get_pingdom_users(api_key):
-    return api_key
+    base_url = "https://api.pingdom.com/api/3.1/alerting/contacts"
+    headers = {"Authorization":f"Bearer {api_key}"}
+
+    user_list = requests.get(base_url, headers=headers).json()
+    
+    for user in user_list['contacts']:
+        print (f"{user['id']}, {user['name']}, {user['notification_targets']['email'][0]['address']}")
+
+        # # Define the CSV file name
+        # csv_file_name = f"PagerDuty.csv"
+    
+        # # Define the header names based on the data we are collecting
+        # headers = ['id', 'name', 'email']
+        # # Open a new CSV file
+        # with open(csv_file_name, mode='w', newline='') as file:
+        #     writer = csv.DictWriter(file, fieldnames=headers)
+            
+        #     # Write the header
+        #     writer.writeheader()
+            
+        #     # Iterate over each user and write their information as a row in the CSV
+        #     for user in user_list:
+        #         id = user['id']
+        #         name = user['name']
+        #         email = user['email']
+                
+        #         # Write the user's details to the CSV
+        #         writer.writerow({
+        #             'id': id,
+        #             'name': name,
+        #             'email': email
+        #         })
+                
+        #         print(f"{user['id']}, {user['name']}, {user['email']}") 
+ 
 def get_pagerduty_users(api_key):
    
     base_url = "https://api.pagerduty.com/users"
@@ -56,7 +90,6 @@ def get_pagerduty_users(api_key):
             })
             
             print(f"{user['id']}, {user['name']}, {user['email']}") 
-
 def get_sendgrid_users(api_key):
     return api_key
 def get_site24x7_users(api_key):
