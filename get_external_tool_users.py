@@ -110,7 +110,7 @@ def get_sendgrid_users(api_key):
         
         # Iterate over each user and write their information as a row in the CSV
         for user in user_list:
-            username = user['name']
+            username = user['username']
             email = user['email']
             
             # Write the user's details to the CSV
