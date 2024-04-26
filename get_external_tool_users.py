@@ -2,6 +2,8 @@ import sys
 import requests
 import time
 import csv
+import json
+from sendgrid import SendGridAPIClient
 
 def get_pingdom_users(api_key):
     base_url = "https://api.pingdom.com/api/3.1/alerting/contacts"
@@ -35,7 +37,7 @@ def get_pingdom_users(api_key):
             })
             
             print(f"{id}, {name}, {email}")
- 
+
 def get_pagerduty_users(api_key):
    
     base_url = "https://api.pagerduty.com/users"
@@ -86,10 +88,39 @@ def get_pagerduty_users(api_key):
                 'email': email
             })
             
-            print(f"{id}, {name}, {email}")
-            
+            print(f"{id}, {name}, {email}")    
+              
 def get_sendgrid_users(api_key):
-    return api_key
+    
+    sg = SendGridAPIClient(api_key)
+    response = sg.client.teammates.get(query_params={'limit': 500})
+    user_list = json.loads(response.body)['result']
+    
+    # Define the CSV file name
+    csv_file_name = f"Sendgrid.csv"
+ 
+    # Define the header names based on the data we are collecting
+    headers = ['username', 'email']
+    # Open a new CSV file
+    with open(csv_file_name, mode='w', newline='') as file:
+        writer = csv.DictWriter(file, fieldnames=headers)
+        
+        # Write the header
+        writer.writeheader()
+        
+        # Iterate over each user and write their information as a row in the CSV
+        for user in user_list:
+            username = user['name']
+            email = user['email']
+            
+            # Write the user's details to the CSV
+            writer.writerow({
+                'username': username,
+                'email': email
+            })
+            
+            print(f"{username}, {email}")    
+    
 def get_site24x7_users(api_key):
     return api_key
 def get_duo_users(api_key):
