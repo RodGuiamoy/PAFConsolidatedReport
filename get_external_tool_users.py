@@ -5,7 +5,7 @@ import csv
 import json
 from sendgrid import SendGridAPIClient
 
-def get_pingdom_users(api_key):
+def get_pingdom_users(api_id, api_key):
     base_url = "https://api.pingdom.com/api/3.1/alerting/contacts"
     headers = {"Authorization":f"Bearer {api_key}"}
 
@@ -38,7 +38,7 @@ def get_pingdom_users(api_key):
             
             print(f"{id}, {name}, {email}")
 
-def get_pagerduty_users(api_key):
+def get_pagerduty_users(api_id, api_key):
    
     base_url = "https://api.pagerduty.com/users"
     headers = {
@@ -90,7 +90,7 @@ def get_pagerduty_users(api_key):
             
             print(f"{id}, {name}, {email}")    
               
-def get_sendgrid_users(api_key):
+def get_sendgrid_users(api_id, api_key):
     
     sg = SendGridAPIClient(api_key)
     response = sg.client.teammates.get(query_params={'limit': 500})
@@ -119,17 +119,64 @@ def get_sendgrid_users(api_key):
                 'email': email
             })
             
-            print(f"{username}, {email}")    
+            print(f"{username}, {email}")
     
-def get_site24x7_users(api_key):
-    return api_key
-def get_duo_users(api_key):
-    return api_key
-def default_case():
-    return "There is no function created to retrieve users from this environment."
+def get_site24x7_users(api_id, api_key):
+    params = {
+		"client_id":api_id, 
+		"client_secret":api_key,
+		"grant_type":"client_credentials",
+		"scope":"Site24x7.Account.All",
+		"soid":"1000.843810594"
+	}
+
+    base_url = "https://accounts.zoho.com/oauth/v2/token"
+    access_token = requests.post(base_url, params=params).json()['access_token']
+    
+    s247_url = "https://www.site24x7.com/api/users"
+    list_headers = {
+		"Accept":"application/json; version=2.0",
+		"Authorization" : f"Zoho-oauthtoken {access_token}"
+	}
+
+    user_list = requests.get(s247_url, headers=list_headers).json()
+    
+    # Define the CSV file name
+    csv_file_name = f"Site24x7.csv"
+ 
+    # Define the header names based on the data we are collecting
+    headers = ['user_id', 'display_name', 'email_address']
+    # Open a new CSV file
+    with open(csv_file_name, mode='w', newline='') as file:
+        writer = csv.DictWriter(file, fieldnames=headers)
+        
+        # Write the header
+        writer.writeheader()
+        
+        # Iterate over each user and write their information as a row in the CSV
+        for user in user_list['data']:
+            user_id = user['user_id']
+            display_name = user['display_name']
+            email_address = user['email_address']
+            
+            # Write the user's details to the CSV
+            writer.writerow({
+                'user_id': user_id,
+                'display_name': display_name,
+                'email_address': email_address
+            })
+            
+            print(f"{user_id}, {display_name}, {email_address}")
+ 
+def get_duo_users(api_id, api_key):
+    return api_key    
 
 external_tool_name = sys.argv[1]
-api_key = sys.argv[2]
+
+api_id = sys.argv[2]
+api_id = api_id.replace("\n","").strip()
+
+api_key = sys.argv[3]
 api_key = api_key.replace("\n","").strip()
 
 # Define the switch-case dictionary
@@ -144,7 +191,6 @@ external_tool_functions = {
 # Check if choice exists in the dictionary
 if external_tool_name in external_tool_functions:
     # Call the function corresponding to the choice
-    external_tool_functions[external_tool_name](api_key)
+    external_tool_functions[external_tool_name](api_id, api_key)
 else:
-    # If choice doesn't exist, call the default case function
-    default_case()   
+    print ("There is no function created to retrieve users from this environment.")
