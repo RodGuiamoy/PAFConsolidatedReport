@@ -17,7 +17,7 @@ for file in csv_files:
         result = chardet.detect(f.read())  # Detect the encoding
         encoding = result['encoding']
 
-    df = pd.read_csv(file, encoding=encoding)
+    df = pd.read_csv(file, encoding=encoding, error_bad_lines=False, warn_bad_lines=True)
     print(df)
     dfs.append(df)
     
