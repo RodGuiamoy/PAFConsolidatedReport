@@ -17,9 +17,13 @@ for file in csv_files:
         result = chardet.detect(f.read())  # Detect the encoding
         encoding = result['encoding']
 
-    df = pd.read_csv(file, encoding=encoding, error_bad_lines=False)
-    print(df)
-    dfs.append(df)
+    try:
+        df = pd.read_csv(file, encoding=encoding)
+        print(df)
+        dfs.append(df)
+    except Exception as e:
+        # Show short description of the error
+        print("An error occurred:", str(e))
     
 # [pd.read_csv(file) for file in csv_files]
 
