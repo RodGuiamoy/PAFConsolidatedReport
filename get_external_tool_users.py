@@ -4,6 +4,7 @@ import time
 import csv
 import json
 from sendgrid import SendGridAPIClient
+from datetime import datetime
 
 def get_pingdom_users(api_id, api_key):
     base_url = "https://api.pingdom.com/api/3.1/alerting/contacts"
@@ -11,8 +12,14 @@ def get_pingdom_users(api_id, api_key):
 
     user_list = requests.get(base_url, headers=headers).json()
     
+    # Get the current date
+    current_date = datetime.now()
+
+    # Format the date to MMddyyyy
+    formatted_date = current_date.strftime('%m%d%Y')
+    
     # Define the CSV file name
-    csv_file_name = f"Pingdom.csv"
+    csv_file_name = f"Pingdom_{formatted_date}.csv"
 
     # Define the header names based on the data we are collecting
     headers = ['id', 'name', 'email']
@@ -62,9 +69,15 @@ def get_pagerduty_users(api_id, api_key):
         params['offset'] = offset
         response = requests.get(base_url, headers=headers, params=params).json()
         user_list.extend(response['users'])
-        
+    
+    # Get the current date
+    current_date = datetime.now()
+
+    # Format the date to MMddyyyy
+    formatted_date = current_date.strftime('%m%d%Y')
+    
     # Define the CSV file name
-    csv_file_name = f"PagerDuty.csv"
+    csv_file_name = f"PagerDuty_{formatted_date}.csv"
  
     # Define the header names based on the data we are collecting
     headers = ['id', 'name', 'email']
@@ -96,8 +109,14 @@ def get_sendgrid_users(api_id, api_key):
     response = sg.client.teammates.get(query_params={'limit': 500})
     user_list = json.loads(response.body)['result']
     
+    # Get the current date
+    current_date = datetime.now()
+
+    # Format the date to MMddyyyy
+    formatted_date = current_date.strftime('%m%d%Y')
+    
     # Define the CSV file name
-    csv_file_name = f"Sendgrid.csv"
+    csv_file_name = f"Sendgrid_{formatted_date}.csv"
  
     # Define the header names based on the data we are collecting
     headers = ['username', 'email']
@@ -141,8 +160,14 @@ def get_site24x7_users(api_id, api_key):
 
     user_list = requests.get(s247_url, headers=list_headers).json()
     
+    # Get the current date
+    current_date = datetime.now()
+
+    # Format the date to MMddyyyy
+    formatted_date = current_date.strftime('%m%d%Y')
+    
     # Define the CSV file name
-    csv_file_name = f"Site24x7.csv"
+    csv_file_name = f"Site24x7_{formatted_date}.csv"
  
     # Define the header names based on the data we are collecting
     headers = ['user_id', 'display_name', 'email_address']
