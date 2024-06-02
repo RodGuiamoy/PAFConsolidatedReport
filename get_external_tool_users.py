@@ -210,10 +210,11 @@ def get_duo_users(api_id, api_key):
             # Convert dictionary to string
             info_str = str(info)
             # Print the string, encoding it to handle special characters
-            print(info_str.encode('utf-8', errors='ignore').decode('utf-8'))
+            print(info_str)
         except Exception as e:
             # Catch and ignore any encoding errors
             print(f"Error printing info: {e}")
+            print(info_str.encode('utf-8', errors='ignore').decode('utf-8'))
 
     
     # return api_key    
