@@ -242,11 +242,11 @@ def get_duo_users(api_id, api_key):
             
             # Write the user's details to the CSV
             writer.writerow({
-                'user_id': user_id,
-                'username': username,
-                'realname': realname,
-                'status': status,
-                'email_address': email_address
+                'user_id': user_id.encode('utf-8', errors='ignore').decode('utf-8'),
+                'username': username.encode('utf-8', errors='ignore').decode('utf-8'),
+                'realname': realname.encode('utf-8', errors='ignore').decode('utf-8'),
+                'status': status.encode('utf-8', errors='ignore').decode('utf-8'),
+                'email_address': email_address.encode('utf-8', errors='ignore').decode('utf-8')
             })
             
             print(f"{user_id}, {username}, {email_address}")            
