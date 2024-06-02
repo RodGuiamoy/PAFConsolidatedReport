@@ -203,18 +203,54 @@ def get_duo_users(api_id, api_key):
     admin_api = duo_client.Admin(ikey=duo_ikey,skey=duo_skey,host=du_host)
     
     # Retrieve all DUO users
-    get_info = admin_api.get_users()
-    # Iterate over each dictionary in the list and print it
-    for info in get_info:
-        try:
-            # Convert dictionary to string
-            info_str = str(info)
-            # Print the string, encoding it to handle special characters
-            print(info_str)
-        except Exception as e:
-            # Catch and ignore any encoding errors
-            print(f"Error printing info: {e}")
-            print(info_str.encode('utf-8', errors='ignore').decode('utf-8'))
+    user_list = admin_api.get_users()
+    
+    # Get the current date
+    current_date = datetime.now()
+
+    # Format the date to MMddyyyy
+    formatted_date = current_date.strftime('%m%d%Y')
+    
+    # Define the CSV file name
+    csv_file_name = f"DUO_{formatted_date}.csv"
+ 
+    # Define the header names based on the data we are collecting
+    headers = ['user_id', 'username', 'realname', 'status', 'email_address']
+    # Open a new CSV file
+    with open(csv_file_name, mode='w', newline='') as file:
+        writer = csv.DictWriter(file, fieldnames=headers)
+        
+        # Write the header
+        writer.writeheader()
+        
+        # Iterate over each dictionary in the list and print it
+        for user in user_list:
+            # try:
+            #     # Convert dictionary to string
+            #     info_str = str(info)
+            #     print(info_str)
+            # except Exception as e:
+            #     # Catch and ignore any encoding errors
+            #     print(f"Error printing info: {e}")
+            #     print(info_str.encode('utf-8', errors='ignore').decode('utf-8'))
+            
+            user_id = user['user_id']
+            username = user['username']
+            realname = user['realname']
+            status = user['status']
+            email_address = user['email']
+            
+            # Write the user's details to the CSV
+            writer.writerow({
+                'user_id': user_id,
+                'username': username,
+                'realname': realname,
+                'status': status,
+                'email_address': email_address
+            })
+            
+            print(f"{user_id}, {username}, {email_address}")            
+    
 
     
     # return api_key    
