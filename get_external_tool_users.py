@@ -204,7 +204,9 @@ def get_duo_users(api_id, api_key):
     
     # Retrieve all DUO users
     get_info = admin_api.get_users()
-    print(get_info.encode('utf-8', errors='ignore').decode('utf-8'))
+    encoded_info = [info.encode('utf-8', errors='ignore') for info in get_info]
+    print(encoded_info)
+
     
     # return api_key    
 
