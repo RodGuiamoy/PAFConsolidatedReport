@@ -36,7 +36,7 @@ def main(aws_environment):
     csv_file_name = f"AWS{aws_environment}_{formatted_date}.csv"
     
     # Define the header names based on the data we are collecting
-    headers = ['UserName', 'EmployeeID', 'Email', 'CreateDate', 'Groups', 'GroupAttachedPolicies', 'AttachedPolicies', 'InlinePolicies', 'AccountID']
+    headers = ['UserName', 'EmployeeID', 'Email', 'CreateDate', 'Groups', 'GroupAttachedPolicies', 'DirectlytAttachedPolicies', 'InlinePolicies', 'AccountID']
     
     # Open a new CSV file
     with open(csv_file_name, mode='w', newline='') as file:
@@ -60,8 +60,8 @@ def main(aws_environment):
                 groups = [group['GroupName'] for group in groups_response['Groups']]
                 
                 # Get attached policies for the user
-                attached_policies_response = iam.list_attached_user_policies(UserName=username)
-                attached_policies = [policy['PolicyName'] for policy in attached_policies_response['AttachedPolicies']]
+                directly_attached_policies_response = iam.list_attached_user_policies(UserName=username)
+                directly_attached_policies = [policy['PolicyName'] for policy in directly_attached_policies_response['AttachedPolicies']]
                 
                  # Get inline policies for the user
                 inline_policies_response = iam.list_user_policies(UserName=username)
@@ -80,12 +80,12 @@ def main(aws_environment):
                     'CreateDate': created_date,
                     'Groups': ','.join(groups),
                     'GroupAttachedPolicies': ','.join(group_attached_policies),
-                    'AttachedPolicies': ','.join(attached_policies),
+                    'DirectlytAttachedPolicies': ','.join(directly_attached_policies),
                     'InlinePolicies': ','.join(inline_policies),
                     'AccountID': account_id
                 })
                 
-                print (f"{username},{employee_id},{email},{created_date},{','.join(groups)},{','.join(attached_policies)},{','.join(inline_policies)},{','.join(group_attached_policies)},{account_id}")
+                print (f"{username},{employee_id},{email},{created_date},{','.join(groups)},{','.join(directly_attached_policies)},{','.join(inline_policies)},{','.join(group_attached_policies)},{account_id}")
 
 if __name__ == "__main__":
     aws_environment = sys.argv[1]

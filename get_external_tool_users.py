@@ -5,6 +5,7 @@ import csv
 import json
 from sendgrid import SendGridAPIClient
 from datetime import datetime
+import duo_client
 
 def get_pingdom_users(api_id, api_key):
     base_url = "https://api.pingdom.com/api/3.1/alerting/contacts"
@@ -194,7 +195,18 @@ def get_site24x7_users(api_id, api_key):
             print(f"{user_id}, {display_name}, {email_address}")
  
 def get_duo_users(api_id, api_key):
-    return api_key    
+    
+    # Initializing DUO API Client
+    duo_ikey = api_id
+    duo_skey = api_key
+    du_host = "api-54f22240.duosecurity.com"
+    admin_api = duo_client.Admin(ikey=duo_ikey,skey=duo_skey,host=du_host)
+    
+    # Retrieve all DUO users
+    get_info = admin_api.get_users()
+    print(get_info)
+    
+    # return api_key    
 
 external_tool_name = sys.argv[1]
 
