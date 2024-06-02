@@ -173,7 +173,7 @@ def get_site24x7_users(api_id, api_key):
     # Define the header names based on the data we are collecting
     headers = ['user_id', 'display_name', 'email_address']
     # Open a new CSV file
-    with open(csv_file_name, mode='w', newline='') as file:
+    with open(csv_file_name, mode='w', newline='', encoding='utf-8') as file:
         writer = csv.DictWriter(file, fieldnames=headers)
         
         # Write the header
@@ -242,11 +242,11 @@ def get_duo_users(api_id, api_key):
             
             # Write the user's details to the CSV
             writer.writerow({
-                'user_id': user_id.encode('utf-8', errors='ignore').decode('utf-8'),
-                'username': username.encode('utf-8', errors='ignore').decode('utf-8'),
-                'realname': realname.encode('utf-8', errors='ignore').decode('utf-8'),
-                'status': status.encode('utf-8', errors='ignore').decode('utf-8'),
-                'email_address': email_address.encode('utf-8', errors='ignore').decode('utf-8')
+                'user_id': user_id,
+                'username': username,
+                'realname': realname,
+                'status': status,
+                'email_address': email_address
             })
             
             print(f"{user_id}, {username}, {email_address}")            
