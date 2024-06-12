@@ -249,10 +249,7 @@ def get_duo_users(api_id, api_key):
                 'email_address': email_address
             })
             
-            print(f"{user_id}, {username}, {email_address}")            
-    
-
-    
+            print(f"{user_id}, {username}, {email_address}")
     # return api_key    
 
 external_tool_name = sys.argv[1]
