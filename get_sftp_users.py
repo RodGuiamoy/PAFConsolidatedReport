@@ -81,3 +81,5 @@ csv_file_name = f"SFTP_{server_name}_{formatted_date}.csv"
 # Open file in write mode ('w'), will create the file if it doesn't exist
 with open(csv_file_name, 'w') as file:
     file.write(sftp_users)
+    
+print(sftp_users)
