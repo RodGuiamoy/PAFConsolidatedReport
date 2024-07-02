@@ -48,8 +48,8 @@ Invoke-Main -UserName "{username}" -Pwrd "{password}"
 powershell_script += additional_command
 
 # need to add code to verify s3 bucket
-# target_bucket = f"infrasre-adreport-raw-{domain.lower()}"
-target_bucket = f"infrasre-{aws_environment.lower()}-sftp-users-raw"
+target_bucket = f"infrasre-adreport-raw-{aws_environment.lower()}"
+#target_bucket = f"infrasre-{aws_environment.lower()}-sftp-users-raw"
 
 
 # Send the command
