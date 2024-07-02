@@ -20,15 +20,12 @@ def wait_for_command_to_complete(instance_id, command_id):
         if status not in ["Pending", "InProgress", "Delayed"]:
             return invocation_response
 
-
-# region = 'ap-southeast-1'
-# instance_id = 'i-077367418569315f2'
-
-server_name = sys.argv[1]
-instance_id = sys.argv[2]
-region = sys.argv[3]
-username = sys.argv[4]
-password = sys.argv[5]
+aws_environment = sys.argv[1]
+server_name = sys.argv[2]
+instance_id = sys.argv[3]
+region = sys.argv[4]
+username = sys.argv[5]
+password = sys.argv[6]
 
 # Initialize a Boto3 session
 session = boto3.Session(region_name=region)
@@ -52,14 +49,16 @@ powershell_script += additional_command
 
 # need to add code to verify s3 bucket
 # target_bucket = f"infrasre-adreport-raw-{domain.lower()}"
+target_bucket = f"infrasre-{aws_environment.lower()}-sftp-users-raw"
+
 
 # Send the command
 response = ssm.send_command(
     InstanceIds=[instance_id],
     DocumentName="AWS-RunPowerShellScript",
     Parameters={"commands": [powershell_script]},
-    TimeoutSeconds=300
-    # OutputS3BucketName=target_bucket,
+    TimeoutSeconds=300,
+    OutputS3BucketName=target_bucket
 )
 
 # Extract command ID
@@ -78,8 +77,18 @@ formatted_date = current_date.strftime("%m%d%Y")
 # Define the CSV file name
 csv_file_name = f"SFTP_{server_name}_{formatted_date}.csv"
 
-# Open file in write mode ('w'), will create the file if it doesn't exist
-with open(csv_file_name, 'w') as file:
-    file.write(sftp_users)
+# # Open file in write mode ('w'), will create the file if it doesn't exist
+# with open(csv_file_name, 'w') as file:
+#     file.write(sftp_users)
     
-print(sftp_users)
+# print(sftp_users)
+
+# get output from s3
+s3_download_path = (
+    f"{command_id}/{instance_id}/awsrunPowerShellScript/0.awsrunPowerShellScript/stdout"
+)
+s3.download_file(target_bucket, s3_download_path, csv_file_name)
+
+with open(csv_file_name, "rb") as file:
+    for line in file:
+        print(line, end="")
