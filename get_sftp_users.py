@@ -20,12 +20,12 @@ def wait_for_command_to_complete(instance_id, command_id):
         if status not in ["Pending", "InProgress", "Delayed"]:
             return invocation_response
 
-aws_environment = sys.argv[1]
-server_name = sys.argv[2]
-instance_id = sys.argv[3]
-region = sys.argv[4]
-username = sys.argv[5]
-password = sys.argv[6]
+server_name = sys.argv[1]
+instance_id = sys.argv[2]
+region = sys.argv[3]
+username = sys.argv[4]
+password = sys.argv[5]
+s3_bucket = sys.argv[5]
 
 # Initialize a Boto3 session
 session = boto3.Session(region_name=region)
@@ -48,7 +48,7 @@ Invoke-Main -UserName "{username}" -Pwrd "{password}"
 powershell_script += additional_command
 
 # need to add code to verify s3 bucket
-target_bucket = f"infrasre-adreport-raw-{aws_environment.lower()}"
+# target_bucket = f"infrasre-adreport-raw-{aws_environment.lower()}"
 # target_bucket = f"infrasre-{aws_environment.lower()}-sftp-users-raw"
 
 
@@ -58,7 +58,7 @@ response = ssm.send_command(
     DocumentName="AWS-RunPowerShellScript",
     Parameters={"commands": [powershell_script]},
     TimeoutSeconds=300,
-    OutputS3BucketName=target_bucket
+    OutputS3BucketName=s3_bucket
 )
 
 # Extract command ID
