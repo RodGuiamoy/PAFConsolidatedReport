@@ -87,7 +87,7 @@ csv_file_name = f"SFTP_{server_name}_{formatted_date}.csv"
 s3_download_path = (
     f"{command_id}/{instance_id}/awsrunPowerShellScript/0.awsrunPowerShellScript/stdout"
 )
-s3.download_file(target_bucket, s3_download_path, csv_file_name)
+s3.download_file(s3_bucket, s3_download_path, csv_file_name)
 
 with open(csv_file_name, "rb") as file:
     for line in file:
