@@ -50,7 +50,7 @@ response = ssm.send_command(
     DocumentName="AWS-RunPowerShellScript",
     Parameters={"commands": [powershell_script]},
     TimeoutSeconds=300,
-    OutputS3BucketName=target_bucket,
+    OutputS3BucketName=target_bucket
 )
 
 # Extract command ID
