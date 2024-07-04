@@ -35,7 +35,7 @@ if dfs:
     current_date = datetime.now().strftime('%m%d%Y')
     
     # Output filename
-    output_file = f"SFTP_Consolidated_{current_date}.csv"
+    output_file = f"SFTP_{current_date}.csv"
     
     # Write the combined dataframe to a CSV file
     try:
