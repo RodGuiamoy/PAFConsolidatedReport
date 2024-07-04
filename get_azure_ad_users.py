@@ -27,13 +27,12 @@ def generate_token(azure_client_id, azure_client_secret):
 
     return bearer_token
 
-
-azure_client_id = sys.argv[1]
-azure_client_secret = sys.argv[2]
-domain = sys.argv[3]
-subscription_id = sys.argv[4]
-resource_group = sys.argv[5]
-ad_server_name = sys.argv[6]
+domain = sys.argv[1]
+subscription_id = sys.argv[2]
+resource_group = sys.argv[3]
+ad_server_name = sys.argv[4]
+azure_client_id = sys.argv[5]
+azure_client_secret = sys.argv[6]
 
 base_url = "https://management.azure.com"
 

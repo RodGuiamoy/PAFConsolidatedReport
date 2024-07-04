@@ -3,10 +3,10 @@ import sys
 from datetime import datetime
 import csv
 
-azure_client_id = sys.argv[1]
-azure_client_secret = sys.argv[2]
-azure_tenant = sys.argv[3]
-tenant_id = sys.argv[4]
+azure_tenant = sys.argv[1]
+tenant_id = sys.argv[2]
+azure_client_id = sys.argv[3]
+azure_client_secret = sys.argv[4]
 
 data = {
     "scope": "https://graph.microsoft.com/.default",
