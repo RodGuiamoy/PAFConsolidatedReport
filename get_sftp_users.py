@@ -23,9 +23,10 @@ def wait_for_command_to_complete(instance_id, command_id):
 server_name = sys.argv[1]
 instance_id = sys.argv[2]
 region = sys.argv[3]
-username = sys.argv[4]
-password = sys.argv[5]
-s3_bucket = sys.argv[6]
+s3_bucket = sys.argv[4]
+username = sys.argv[5]
+password = sys.argv[6]
+
 
 # Initialize a Boto3 session
 session = boto3.Session(region_name=region)
