@@ -22,9 +22,6 @@ def wait_for_command_to_complete(instance_id, command_id):
             return invocation_response
 
 
-# region = 'ap-southeast-1'
-# instance_id = 'i-077367418569315f2'
-
 domain = sys.argv[1]
 region = sys.argv[2]
 instance_id = sys.argv[3]
@@ -58,7 +55,7 @@ command_id = response["Command"]["CommandId"]
 
 # Wait for the command to complete and display the output
 invocation_response = wait_for_command_to_complete(instance_id, command_id)
-ad_users_str = invocation_response["StandardOutputContent"].splitlines()
+# ad_users_str = invocation_response["StandardOutputContent"].splitlines()
 
 # Get the current date
 current_date = datetime.now()
@@ -71,7 +68,6 @@ domain = domain.replace(" ", "")
 
 # Define the CSV file name
 csv_file_name = f"AD{domain}_{formatted_date}.csv"
-
 
 # get output from s3
 s3_download_path = (

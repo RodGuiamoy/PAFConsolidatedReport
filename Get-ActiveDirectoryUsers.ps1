@@ -1,5 +1,5 @@
-$properties = 'SamAccountName', 'EmailAddress', 'EmployeeID'
-$headers = 'Domain,' + $($properties -join ",")
+$properties = 'SamAccountName', 'EmailAddress', 'EmployeeID', 'LastLogonDate'
+$headers = ($properties -join ",") + ',Domain,OU,GroupMemberships'
 Write-Host "$headers"
 
 $adUsers = Get-ADUser -Filter * -Properties $properties
@@ -15,9 +15,17 @@ $adUsers | % {
         $propertyValues += "$($user.$prop)"
     }
 
-    # Join all property value strings with a comma and space
+    # Join all property value strings with a comma
     $outputString = $propertyValues -join ","
-    
-    Write-Host "$domain," -NoNewline
-    Write-Host $outputString
+
+    # Get the OU from the DistinguishedName
+    $ou = $user.DistinguishedName -replace '^.*?,(?=[A-Z]{2}=)'
+
+    # Get the group memberships
+    $groupNames = (Get-ADPrincipalGroupMembership $user | Select-Object Name).Name -join ","
+        
+    Write-Host $outputString -NoNewline
+    Write-Host ",$domain,`"$ou`",`"$groupNames`""
+
+    # Read-Host
 }

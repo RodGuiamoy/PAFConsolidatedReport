@@ -25,7 +25,7 @@ bearer_token = response.json()["access_token"]
 
 cont = True
 full_user_list = []
-target_query_url = "https://graph.microsoft.com/v1.0/users"
+target_query_url = "https://graph.microsoft.com/beta/users"
 headers = {"Authorization": f"Bearer {bearer_token}"}
 
 while cont:
@@ -39,7 +39,7 @@ while cont:
 
     full_user_list.extend(response["value"])
 
-print(full_user_list)
+# print(full_user_list)
 
 # Get the current date
 current_date = datetime.now()
@@ -50,20 +50,16 @@ formatted_date = current_date.strftime("%m%d%Y")
 # Define the CSV file name
 csv_file_name = f"AZ{azure_tenant}_{formatted_date}.csv"
 
-# Define column headers that match the dictionary keys
+# Define column headers
 headers = [
-    "businessPhones",
     "displayName",
-    "givenName",
-    "id",
-    "jobTitle",
-    "mail",
-    "mobilePhone",
-    "officeLocation",
-    "preferredLanguage",
-    "surname",
     "userPrincipalName",
+    "mail",
+    "employeeId",
+    "createdDateTime",
+    "id",
 ]
+
 
 # Open a new CSV file
 with open(csv_file_name, mode="w", newline="") as file:
@@ -74,8 +70,14 @@ with open(csv_file_name, mode="w", newline="") as file:
 
     for user in full_user_list:
 
-        # Process 'businessPhones' list to a string representation
-        user["businessPhones"] = (
-            ", ".join(user["businessPhones"]) if user["businessPhones"] else None
-        )
-        writer.writerow(user)
+        user_basic_props = {
+            "displayName": user["displayName"],
+            "userPrincipalName": user["userPrincipalName"],
+            "mail": user["mail"],
+            "employeeId": user["employeeId"],
+            "createdDateTime": user["createdDateTime"],
+            "id": user["id"],
+        }
+
+        writer.writerow(user_basic_props)
+        print(user_basic_props)

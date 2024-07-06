@@ -27,7 +27,6 @@ s3_bucket = sys.argv[4]
 username = sys.argv[5]
 password = sys.argv[6]
 
-
 # Initialize a Boto3 session
 session = boto3.Session(region_name=region)
 
