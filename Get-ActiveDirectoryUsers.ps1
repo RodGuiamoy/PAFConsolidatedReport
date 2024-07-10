@@ -1,36 +1,24 @@
-#Measure-Command {
 $properties = 'SamAccountName', 'EmailAddress', 'EmployeeID', 'LastLogonDate', 'MemberOf'
-$headers = 'Domain,' + ($properties -join ",") + ',OU'
-    
+$headers = 'Domain,' + ($properties -join ",") + ',OU,GroupMemberships'
+
 $adUsers = Get-ADUser -Filter * -Properties $properties
 $domain = (Get-CimInstance Win32_ComputerSystem).Domain
-    
+
 $userList = ""
-    
+
 $adUsers | % {
-    
+
     $user = $_
-    
-    $propertyValues = @()
-    
-    $properties | Where-Object { $_ -ne 'MemberOf' } | % {
-        
-        $propertyValues += $user.$_
-    
-    }
-    
-    # Join all property value strings with a comma
-    $outputString = $propertyValues -join ","
-    
+
+
     # Get the OU from the DistinguishedName
     $ou = $user.DistinguishedName -replace '^.*?,(?=[A-Z]{2}=)'
-    
-    $groupMemberships = $user.MemberOf -join "; "
-            
-    $userList = ($userList + "$domain," + $outputString + ",`"$groupMemberships`"" + ",`"$ou`"`n")
-    
+
+    $groupMemberships = $user.MemberOf -join ";"
+        
+    $userList = ($userList + "$domain," + "$($user.SamAccountName),$($user.EmailAddress),$($user.EmployeeID),$($user.LastLogonDate)," + "`"$ou`",`"$groupMemberships`"`n")
+
 }
-    
+
 $headers
 $userList
-    
