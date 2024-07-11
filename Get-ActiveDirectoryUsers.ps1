@@ -17,7 +17,7 @@ $adUsers | % {
     # $groupMemberships = $user.MemberOf -join ";"
         
     #$userList = ($userList + "$domain," + "$($user.SamAccountName),$($user.EmailAddress),$($user.EmployeeID),$($user.LastLogonDate)," + "`"$ou`",`"$groupMemberships`"`n")
-    $userList = ($userList + "$domain," + "$($user.SamAccountName),$($user.EmailAddress),$($user.EmployeeID)" + "`n") #,$($user.LastLogonDate)," + "`"$ou`",`"$groupMemberships`"`n")
+    $userList = ($userList + "$domain," + "$($user.SamAccountName),$($user.EmailAddress),$($user.EmployeeID)" + "`n")
 
 }
 

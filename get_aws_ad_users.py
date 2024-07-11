@@ -45,7 +45,7 @@ target_bucket = f"infrasre-adreport-raw-{domain.lower()}"
 response = ssm.send_command(
     InstanceIds=[instance_id],
     DocumentName="AWS-RunPowerShellScript",
-    Parameters={"commands": [powershell_script], "executionTimeout": ["18000"]},
+    Parameters={"commands": [powershell_script], "executionTimeout": ["3600"]},
     TimeoutSeconds=300,
     OutputS3BucketName=target_bucket
 )
