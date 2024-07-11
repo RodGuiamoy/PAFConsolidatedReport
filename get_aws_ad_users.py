@@ -48,16 +48,6 @@ domain = domain.replace(" ", "")
 # Define the CSV file name
 csv_file_name = f"AD{domain}_{formatted_date}.csv"
 
-expiration = 3600  # URL expiration time in seconds
-
-presigned_upload_url = s3.generate_presigned_url(
-    "put_object",
-    Params={"Bucket": target_bucket, "Key": csv_file_name},
-    ExpiresIn=expiration,
-)
-
-
-print(presigned_upload_url)
 # Define the PowerShell script you want to run
 # Load the PowerShell script from a file
 with open("Get-AWSActiveDirectoryUsers.ps1", "r") as file:
@@ -65,7 +55,7 @@ with open("Get-AWSActiveDirectoryUsers.ps1", "r") as file:
 
 # Define your additional PowerShell command to append
 additional_command = f'''
-Invoke-Main -S3PresignedUploadUrl "{presigned_upload_url}"
+Invoke-Main -CSVFileName "{csv_file_name}"
 '''
 
 # Append the command to the existing script
@@ -86,10 +76,12 @@ command_id = response["Command"]["CommandId"]
 # Wait for the command to complete and display the output
 invocation_response = wait_for_command_to_complete(instance_id, command_id)
 
-# get output from s3
-# s3_download_path = (
-#     f"{command_id}/{instance_id}/awsrunPowerShellScript/0.awsrunPowerShellScript/stdout"
-# )
+# output = invocation_response['StandardOutputContent'].splitlines()
+# print(output)
+
+# error = invocation_response['StandardErrorContent'].splitlines()
+# print(error)
+
 s3.download_file(target_bucket, csv_file_name, csv_file_name)
 
 with open(csv_file_name, "rb") as file:
