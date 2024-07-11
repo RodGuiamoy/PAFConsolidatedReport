@@ -52,7 +52,7 @@ headers = {"Authorization": f"Bearer {new_token}", "Content-Type": "application/
 
 # Define the PowerShell script you want to run
 # Load the PowerShell script from a file
-with open("Get-ActiveDirectoryUsers.ps1", "r") as file:
+with open("Get-AzureActiveDirectoryUsers.ps1", "r") as file:
     powershell_script = file.read()
 
 post_data = {"commandId": "RunPowerShellScript", "script": [powershell_script]}

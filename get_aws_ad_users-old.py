@@ -33,8 +33,29 @@ session = boto3.Session(region_name=region)
 ssm = session.client("ssm")
 s3 = session.client("s3")
 
+# Define the PowerShell script you want to run
+# Load the PowerShell script from a file
+with open("Get-AWSActiveDirectoryUsers.ps1", "r") as file:
+    powershell_script = file.read()
+
 # need to add code to verify s3 bucket
 target_bucket = f"infrasre-adreport-raw-{domain.lower()}"
+
+# Send the command
+response = ssm.send_command(
+    InstanceIds=[instance_id],
+    DocumentName="AWS-RunPowerShellScript",
+    Parameters={"commands": [powershell_script], "executionTimeout": ["3600"]},
+    TimeoutSeconds=300,
+    OutputS3BucketName=target_bucket
+)
+
+# Extract command ID
+command_id = response["Command"]["CommandId"]
+
+# Wait for the command to complete and display the output
+invocation_response = wait_for_command_to_complete(instance_id, command_id)
+# ad_users_str = invocation_response["StandardOutputContent"].splitlines()
 
 # Get the current date
 current_date = datetime.now()
@@ -48,49 +69,11 @@ domain = domain.replace(" ", "")
 # Define the CSV file name
 csv_file_name = f"AD{domain}_{formatted_date}.csv"
 
-expiration = 3600  # URL expiration time in seconds
-
-presigned_upload_url = s3.generate_presigned_url(
-    "put_object",
-    Params={"Bucket": target_bucket, "Key": csv_file_name},
-    ExpiresIn=expiration,
-)
-
-
-print(presigned_upload_url)
-# Define the PowerShell script you want to run
-# Load the PowerShell script from a file
-with open("Get-AWSActiveDirectoryUsers.ps1", "r") as file:
-    powershell_script = file.read()
-
-# Define your additional PowerShell command to append
-additional_command = f'''
-Invoke-Main -S3PresignedUploadUrl "{presigned_upload_url}"
-'''
-
-# Append the command to the existing script
-powershell_script += additional_command
-
-# Send the command
-response = ssm.send_command(
-    InstanceIds=[instance_id],
-    DocumentName="AWS-RunPowerShellScript",
-    Parameters={"commands": [powershell_script], "executionTimeout": ["3600"]},
-    TimeoutSeconds=300,
-    OutputS3BucketName=target_bucket,
-)
-
-# Extract command ID
-command_id = response["Command"]["CommandId"]
-
-# Wait for the command to complete and display the output
-invocation_response = wait_for_command_to_complete(instance_id, command_id)
-
 # get output from s3
-# s3_download_path = (
-#     f"{command_id}/{instance_id}/awsrunPowerShellScript/0.awsrunPowerShellScript/stdout"
-# )
-s3.download_file(target_bucket, csv_file_name, csv_file_name)
+s3_download_path = (
+    f"{command_id}/{instance_id}/awsrunPowerShellScript/0.awsrunPowerShellScript/stdout"
+)
+s3.download_file(target_bucket, s3_download_path, csv_file_name)
 
 with open(csv_file_name, "rb") as file:
     for line in file:
