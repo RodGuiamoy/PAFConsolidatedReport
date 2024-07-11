@@ -1,24 +1,23 @@
-$properties = 'SamAccountName', 'EmailAddress', 'EmployeeID', 'LastLogonDate', 'MemberOf'
-$headers = 'Domain,' + ($properties -join ",") + ',OU,GroupMemberships'
+$properties = 'SamAccountName', 'EmailAddress', 'EmployeeID'
+$headers = 'Domain,' + $($properties -join ",")
+Write-Host "$headers"
 
 $adUsers = Get-ADUser -Filter * -Properties $properties
 $domain = (Get-CimInstance Win32_ComputerSystem).Domain
-
-$userList = ""
 
 $adUsers | % {
 
     $user = $_
 
-    # Get the OU from the DistinguishedName
-    $ou = $user.DistinguishedName -replace '^.*?,(?=[A-Z]{2}=)'
+    $propertyValues = @()
 
-    $groupMemberships = $user.MemberOf -join ";"
-        
-    $userList = ($userList + "$domain," + "$($user.SamAccountName),$($user.EmailAddress),$($user.EmployeeID),$($user.LastLogonDate)," + "`"$ou`",`"$groupMemberships`"`n")
-    # $userList = ($userList + "$domain," + "$($user.SamAccountName),$($user.EmailAddress),$($user.EmployeeID)" + "`n")
+    foreach ($prop in $properties) {
+        $propertyValues += "$($user.$prop)"
+    }
 
+    # Join all property value strings with a comma and space
+    $outputString = $propertyValues -join ","
+    
+    Write-Host "$domain," -NoNewline
+    Write-Host $outputString
 }
-
-$headers
-$userList
