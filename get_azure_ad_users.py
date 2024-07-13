@@ -39,58 +39,62 @@ base_url = "https://management.azure.com"
 new_token = generate_token(azure_client_id, azure_client_secret)
 
 api_version = "2023-09-01"
-
 headers = {"Authorization": f"Bearer {new_token}", "Content-Type": "application/json"}
 
-# Define the PowerShell script you want to run
 # Load the PowerShell script from a file
 with open("Get-AzureActiveDirectoryUsers.ps1", "r") as file:
     powershell_script = file.read()
 
 post_data = {"commandId": "RunPowerShellScript", "script": [powershell_script]}
-
 post_url = f"{base_url}/subscriptions/{subscription_id}/resourceGroups/{resource_group}/providers/Microsoft.Compute/virtualMachines/{ad_server_name}/runCommand?api-version={api_version}"
 location = ""
 
+# Initiate the command execution
 while not location:
     try:
         run_init_response = requests.post(post_url, headers=headers, json=post_data)
-        location = run_init_response.headers["Location"]
-    except:
-        pass
+        if run_init_response.status_code == 200 or run_init_response.status_code == 202:
+            location = run_init_response.headers.get("Location", "")
+    except Exception as e:
+        print(f"Error initiating command: {e}")
+    time.sleep(5)  # Retry after a short delay
 
-run_result_response = ""
-
-if location:
-    print("\n=======================================================")
-    print(f"RunCommand sent successfully in {resource_group.upper()}!")
-    print("=======================================================")
-
-    print("Waiting for async call to finish...")
-    while not requests.get(location, headers=headers).text:
-        print("still waiting...")
-        time.sleep(10)
-
-    run_result_response = requests.get(location, headers=headers).json()["value"]
-
-    # ad_users = run_result_response[0]["message"]
-    
-    # print(run_result_response)
-    ad_users = ""
-    if run_result_response:
-    
-        for result in run_result_response:
-            ad_users += result.get("message", "")
-            
-    print("Result from PowerShell script:")
-    print(ad_users)
-
-    
-else:
+if not location:
     print("\n=======================================================")
     print(f"RunCommand not sent successfully in {resource_group.upper()}!")
     print("=======================================================")
-    exit()
+    sys.exit()
+else:
+    print("\n=======================================================")
+    print(f"RunCommand sent successfully in {resource_group.upper()}!")
+    print("=======================================================")
+    print("Waiting for async call to finish...")
+
+# Wait for the async call to finish and collect results
+run_result_response = []
+while True:
+    try:
+        result_response = requests.get(location, headers=headers)
+        if result_response.status_code == 200:
+            run_result_response = result_response.json().get("value", [])
+            if run_result_response:
+                break
+        elif result_response.status_code == 202:
+            print("still waiting...")
+        else:
+            print(f"Unexpected status code: {result_response.status_code}")
+    except Exception as e:
+        print(f"Error fetching command result: {e}")
+    time.sleep(10)  # Check every 10 seconds
+
+# Process and display the results
+ad_users = ""
+if run_result_response:
+    for result in run_result_response:
+        ad_users += result.get("message", "")
+
+print("Result from PowerShell script:")
+print(ad_users)
 
 # Get the current date
 current_date = datetime.now()
