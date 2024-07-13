@@ -83,7 +83,8 @@ if location:
 
     ad_users = run_result_response[0]["message"]
     
-    print(ad_users)
+    print(run_result_response)
+    
 else:
     print("\n=======================================================")
     print(f"RunCommand not sent successfully in {resource_group.upper()}!")
