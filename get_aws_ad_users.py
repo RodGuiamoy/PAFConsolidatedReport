@@ -55,7 +55,7 @@ with open("Get-AWSActiveDirectoryUsers.ps1", "r") as file:
 
 # Define your additional PowerShell command to append
 additional_command = f'''
-Invoke-Main -CSVFileName "{csv_file_name}"
+Invoke-Main -BucketName "{target_bucket}" -CSVFileName "{csv_file_name}"
 '''
 
 # Append the command to the existing script
@@ -66,8 +66,8 @@ response = ssm.send_command(
     InstanceIds=[instance_id],
     DocumentName="AWS-RunPowerShellScript",
     Parameters={"commands": [powershell_script], "executionTimeout": ["3600"]},
-    TimeoutSeconds=300,
-    OutputS3BucketName=target_bucket,
+    TimeoutSeconds=300 #,
+    #OutputS3BucketName=target_bucket,
 )
 
 # Extract command ID

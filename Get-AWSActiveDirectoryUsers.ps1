@@ -1,6 +1,8 @@
 Function Invoke-Main {
     Param(
+        $BucketName,
         $CSVFileName
+       
     )
 
     $properties = 'SamAccountName', 'EmailAddress', 'EmployeeID', 'LastLogonDate', 'MemberOf', 'DistinguishedName'
@@ -14,5 +16,5 @@ Function Invoke-Main {
         Select-Object @{Name = 'Domain'; Expression = { $domain } }, 'SamAccountName', 'EmailAddress', 'EmployeeID', 'LastLogonDate', @{Name='GroupMemberships'; Expression = { $_.MemberOf -join "; "}}, @{Name = 'OU'; Expression = { $_.DistinguishedName -replace '^.*?,(?=[A-Z]{2}=)' } } | `
         Export-CSV $CSVFileName -NoTypeInformation -Encoding UTF8
 
-    Write-S3Object -BucketName infrasre-adreport-raw-avitru -File $CSVFileName 
+    Write-S3Object -BucketName $BucketName -File $CSVFileName 
 }
