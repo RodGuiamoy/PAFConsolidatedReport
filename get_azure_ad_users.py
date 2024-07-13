@@ -64,6 +64,7 @@ if not location:
     print(f"RunCommand not sent successfully in {resource_group.upper()}!")
     print("=======================================================")
     sys.exit()
+    
 else:
     print("\n=======================================================")
     print(f"RunCommand sent successfully in {resource_group.upper()}!")
