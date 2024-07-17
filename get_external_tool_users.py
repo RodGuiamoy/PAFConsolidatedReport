@@ -12,6 +12,7 @@ def get_pingdom_users(api_id, api_key):
     headers = {"Authorization":f"Bearer {api_key}"}
 
     user_list = requests.get(base_url, headers=headers).json()
+    # print(user_list)
     
     # Get the current date
     current_date = datetime.now()

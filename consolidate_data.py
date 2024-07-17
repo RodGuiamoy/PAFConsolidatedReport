@@ -1,7 +1,9 @@
 import os
 import pandas as pd
 import chardet
-from datetime import datetime
+import sys
+
+current_date = sys.argv[1]
 
 # List all files in the current working directory
 files = os.listdir()
@@ -29,7 +31,7 @@ for file in csv_files:
         # Show short description of the error
         print("An error occurred:", str(e))
 
-current_date = datetime.now().strftime("%m%d%Y")
+# current_date = datetime.now().strftime("%m%d%Y")
 
 # Create a new Excel writer object
 writer = pd.ExcelWriter(
