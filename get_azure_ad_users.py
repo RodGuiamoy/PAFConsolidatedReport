@@ -1,6 +1,5 @@
 import requests
 import time
-import boto3
 import sys
 from datetime import datetime
 
@@ -33,6 +32,7 @@ resource_group = sys.argv[3]
 ad_server_name = sys.argv[4]
 azure_client_id = sys.argv[5]
 azure_client_secret = sys.argv[6]
+s3_upload_url = sys.argv[7]
 
 base_url = "https://management.azure.com"
 
@@ -44,6 +44,14 @@ headers = {"Authorization": f"Bearer {new_token}", "Content-Type": "application/
 # Load the PowerShell script from a file
 with open("Get-AzureActiveDirectoryUsers.ps1", "r") as file:
     powershell_script = file.read()
+    
+# Define your additional PowerShell command to append
+additional_command = f'''
+Invoke-Main -s3UploadUrl "{s3_upload_url}"
+'''
+
+# Append the command to the existing script
+powershell_script += additional_command
 
 post_data = {"commandId": "RunPowerShellScript", "script": [powershell_script]}
 post_url = f"{base_url}/subscriptions/{subscription_id}/resourceGroups/{resource_group}/providers/Microsoft.Compute/virtualMachines/{ad_server_name}/runCommand?api-version={api_version}"
@@ -88,31 +96,37 @@ while True:
         print(f"Error fetching command result: {e}")
     time.sleep(10)  # Check every 10 seconds
 
-# Process and display the results
-ad_users = ""
-if run_result_response:
-    for result in run_result_response:
-        ad_users += result.get("message", "")
 
-print("Result from PowerShell script:")
-print(ad_users)
+# # Process and display the results
+# ad_users = ""
+# if run_result_response:
+#     for result in run_result_response:
+#         ad_users += result.get("message", "")
 
-# Get the current date
-current_date = datetime.now()
+# print("Result from PowerShell script:")
+# print(ad_users)
 
-# Format the date to MMddyyyy
-formatted_date = current_date.strftime("%m%d%Y")
+# # Get the current date
+# current_date = datetime.now()
 
-# Using str.replace() to remove spaces
-domain = domain.replace(" ", "")
+# # Format the date to MMddyyyy
+# formatted_date = current_date.strftime("%m%d%Y")
 
-# Define the CSV file name
-csv_file_name = f"AD{domain}_{formatted_date}.csv"
+# # Using str.replace() to remove spaces
+# domain = domain.replace(" ", "")
 
-# Open the file in write mode ('w' mode), this will create the file if it doesn't exist
-# If the file already exists, it will be overwritten
-with open(csv_file_name, "w") as file:
-    # Write the content of the string variable to the file
-    file.write(ad_users)
+# # Define the CSV file name
+# csv_file_name = f"AD{domain}_{formatted_date}.csv"
 
-# set_expiry_and_tag(sys.argv[1],sys.argv[2], sys.argv[3], sys.argv[4])
+# # Initialize a Boto3 session
+# session = boto3.Session(region_name=region)
+
+# # Use the SSM (Simple Systems Manager) client
+# ssm = session.client("ssm")
+# s3 = session.client("s3")
+
+# s3.download_file(s3_bucket, csv_file_name, csv_file_name)
+
+# with open(csv_file_name, "rb") as file:
+#     for line in file:
+#         print(line, end="")

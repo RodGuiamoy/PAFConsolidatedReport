@@ -1,5 +1,8 @@
 import boto3
+import sys
 
+s3_bucket = sys.argv[1]
+object = sys.argv[2]
 
 def create_presigned_url(bucket_name, object_name, expiration=3600):
     """Generate a presigned URL to share an S3 object
@@ -26,5 +29,7 @@ def create_presigned_url(bucket_name, object_name, expiration=3600):
 
 
 # Example usage
-url = create_presigned_url("your-bucket-name", "your-object-key")
+url = create_presigned_url(s3_bucket, object)
 print(url)
+
+# curl -X PUT -T "{0}" --ssl-no-revoke "{1}"' -f "$domain.csv", $S3PresignedUploadUrl

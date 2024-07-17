@@ -1,23 +1,19 @@
-$properties = 'SamAccountName', 'EmailAddress', 'EmployeeID'
-$headers = 'Domain,' + $($properties -join ",")
-Write-Host "$headers"
+Function Invoke-Main {
+    Param(
+        $s3UploadUrl
+    )
 
-$adUsers = Get-ADUser -Filter * -Properties $properties
-$domain = (Get-CimInstance Win32_ComputerSystem).Domain
+    $properties = 'SamAccountName', 'EmailAddress', 'EmployeeID', 'LastLogonDate', 'MemberOf', 'DistinguishedName'
 
-$adUsers | % {
+    $adUsers = Get-ADUser -Filter * -Properties $properties
+    $domain = (Get-CimInstance Win32_ComputerSystem).Domain
 
-    $user = $_
+    # Remove-Item "$domain.csv" -Force
 
-    $propertyValues = @()
+    $adUsers | `
+        Select-Object @{Name = 'Domain'; Expression = { $domain } }, 'SamAccountName', 'EmailAddress', 'EmployeeID', 'LastLogonDate', @{Name='GroupMemberships'; Expression = { $_.MemberOf -join "; "}}, @{Name = 'OU'; Expression = { $_.DistinguishedName -replace '^.*?,(?=[A-Z]{2}=)' } } | `
+        Export-CSV $CSVFileName -NoTypeInformation -Encoding UTF8
 
-    foreach ($prop in $properties) {
-        $propertyValues += "$($user.$prop)"
-    }
-
-    # Join all property value strings with a comma and space
-    $outputString = $propertyValues -join ","
-    
-    Write-Host "$domain," -NoNewline
-    Write-Host $outputString
+    $cmd = 'curl -X PUT -T "{0}" --ssl-no-revoke "{1}"' -f "$domain.csv", $s3UploadUrl
+    cmd /c $cmd
 }
