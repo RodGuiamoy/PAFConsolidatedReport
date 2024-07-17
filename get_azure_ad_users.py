@@ -30,9 +30,10 @@ domain = sys.argv[1]
 subscription_id = sys.argv[2]
 resource_group = sys.argv[3]
 ad_server_name = sys.argv[4]
-azure_client_id = sys.argv[5]
-azure_client_secret = sys.argv[6]
-s3_upload_url = sys.argv[7]
+s3_upload_url = sys.argv[5]
+azure_client_id = sys.argv[6]
+azure_client_secret = sys.argv[7]
+
 
 base_url = "https://management.azure.com"
 
@@ -97,14 +98,14 @@ while True:
     time.sleep(10)  # Check every 10 seconds
 
 
-# # Process and display the results
-# ad_users = ""
-# if run_result_response:
-#     for result in run_result_response:
-#         ad_users += result.get("message", "")
+# Process and display the results
+script_result = ""
+if run_result_response:
+    for result in run_result_response:
+        script_result += result.get("message", "")
 
-# print("Result from PowerShell script:")
-# print(ad_users)
+print("Result from PowerShell script:")
+print(script_result)
 
 # # Get the current date
 # current_date = datetime.now()
