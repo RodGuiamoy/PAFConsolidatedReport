@@ -1,7 +1,7 @@
 Function Invoke-Main {
     Param(
         $BucketName,
-        $CSVFileName
+        $outputFile
        
     )
 
@@ -14,7 +14,7 @@ Function Invoke-Main {
 
     $adUsers | `
         Select-Object @{Name = 'Domain'; Expression = { $domain } }, 'SamAccountName', 'EmailAddress', 'EmployeeID', 'LastLogonDate', @{Name='GroupMemberships'; Expression = { $_.MemberOf -join "; "}}, @{Name = 'OU'; Expression = { $_.DistinguishedName -replace '^.*?,(?=[A-Z]{2}=)' } } | `
-        Export-CSV $CSVFileName -NoTypeInformation -Encoding UTF8
+        Export-CSV $outputFile -NoTypeInformation -Encoding UTF8
 
-    Write-S3Object -BucketName $BucketName -File $CSVFileName 
+    Write-S3Object -BucketName $BucketName -File $outputFile 
 }

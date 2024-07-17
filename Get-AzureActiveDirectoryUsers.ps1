@@ -1,6 +1,7 @@
 Function Invoke-Main {
     Param(
-        $s3UploadUrl
+        $s3UploadUrl,
+        $fileName
     )
 
     $properties = 'SamAccountName', 'EmailAddress', 'EmployeeID', 'LastLogonDate', 'MemberOf', 'DistinguishedName'
@@ -12,8 +13,8 @@ Function Invoke-Main {
 
     $adUsers | `
         Select-Object @{Name = 'Domain'; Expression = { $domain } }, 'SamAccountName', 'EmailAddress', 'EmployeeID', 'LastLogonDate', @{Name='GroupMemberships'; Expression = { $_.MemberOf -join "; "}}, @{Name = 'OU'; Expression = { $_.DistinguishedName -replace '^.*?,(?=[A-Z]{2}=)' } } | `
-        Export-CSV $CSVFileName -NoTypeInformation -Encoding UTF8
+        Export-CSV $fileName -NoTypeInformation -Encoding UTF8
 
-    $cmd = 'curl -X PUT -T "{0}" --ssl-no-revoke "{1}"' -f "$domain.csv", $s3UploadUrl
+    $cmd = 'curl -X PUT -T "{0}" --ssl-no-revoke "{1}"' -f $fileName, $s3UploadUrl
     cmd /c $cmd
 }

@@ -42,13 +42,25 @@ new_token = generate_token(azure_client_id, azure_client_secret)
 api_version = "2023-09-01"
 headers = {"Authorization": f"Bearer {new_token}", "Content-Type": "application/json"}
 
+# Get the current date
+current_date = datetime.now()
+
+# Format the date to MMddyyyy
+formatted_date = current_date.strftime("%m%d%Y")
+
+# Using str.replace() to remove spaces
+domain = domain.replace(" ", "")
+
+# Define the CSV file name
+csv_file_name = f"AD{domain}_{formatted_date}.csv"
+
 # Load the PowerShell script from a file
 with open("Get-AzureActiveDirectoryUsers.ps1", "r") as file:
     powershell_script = file.read()
     
 # Define your additional PowerShell command to append
 additional_command = f'''
-Invoke-Main -s3UploadUrl "{s3_upload_url}"
+Invoke-Main -s3UploadUrl "{s3_upload_url}" -outputFile "{csv_file_name}"
 '''
 
 # Append the command to the existing script
@@ -107,17 +119,7 @@ if run_result_response:
 print("Result from PowerShell script:")
 print(script_result)
 
-# # Get the current date
-# current_date = datetime.now()
 
-# # Format the date to MMddyyyy
-# formatted_date = current_date.strftime("%m%d%Y")
-
-# # Using str.replace() to remove spaces
-# domain = domain.replace(" ", "")
-
-# # Define the CSV file name
-# csv_file_name = f"AD{domain}_{formatted_date}.csv"
 
 # # Initialize a Boto3 session
 # session = boto3.Session(region_name=region)
