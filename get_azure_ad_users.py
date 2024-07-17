@@ -60,7 +60,7 @@ with open("Get-AzureActiveDirectoryUsers.ps1", "r") as file:
     
 # Define your additional PowerShell command to append
 additional_command = f'''
-Invoke-Main -s3UploadUrl "{s3_upload_url}" -outputFile "{csv_file_name}"
+Invoke-Main -s3UploadUrl "{s3_upload_url}" -CSVFileName "{csv_file_name}"
 '''
 
 # Append the command to the existing script
