@@ -3,7 +3,7 @@ import pandas as pd
 import chardet
 import sys
 
-current_date = sys.argv[1]
+output_file = sys.argv[1]
 
 # List all files in the current working directory
 files = os.listdir()
@@ -35,7 +35,7 @@ for file in csv_files:
 
 # Create a new Excel writer object
 writer = pd.ExcelWriter(
-    f"Consolidated System Access Information - {current_date}.xlsx", engine="xlsxwriter"
+    f"{output_file}", engine="xlsxwriter"
 )
 
 # Write each dataframe to a separate sheet in the Excel file, naming sheets after the filename
