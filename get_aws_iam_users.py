@@ -1,4 +1,4 @@
-# i mport boto3
+import boto3
 import csv
 import sys
 from datetime import datetime
@@ -116,6 +116,7 @@ def main(aws_environment):
                         ),
                         "InlinePolicies": ",".join(inline_policies),
                         "AccountID": account_id,
+                        "test": "test",
                     }
                 )
 
