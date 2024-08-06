@@ -12,7 +12,7 @@ Function Invoke-Main {
     # Remove-Item "$domain.csv" -Force
 
     $adUsers | `
-        Select-Object @{Name = 'Domain'; Expression = { $domain } }, 'SamAccountName', 'EmailAddress', 'EmployeeID', 'LastLogonDate', @{Name='GroupMemberships'; Expression = { $_.MemberOf -join "; "}}, @{Name = 'OU'; Expression = { $_.DistinguishedName -replace '^.*?,(?=[A-Z]{2}=)' } } | `
+        Select-Object @{Name = 'Domain'; Expression = { $domain } }, 'SamAccountName', 'EmailAddress', 'EmployeeID', 'LastLogonDate', @{Name = 'GroupMemberships'; Expression = { $_.MemberOf -join "; " } }, @{Name = 'OU'; Expression = { $_.DistinguishedName -replace '^.*?,(?=[A-Z]{2}=)' } }, @{Name = 'AccountStatus'; Expression = { if ($_.Enabled -eq $True) { 'Enabled' } else { 'Disabled' } } } | `
         Export-CSV $CSVFileName -NoTypeInformation -Encoding UTF8
 
     Write-S3Object -BucketName $BucketName -File $CSVFileName 
