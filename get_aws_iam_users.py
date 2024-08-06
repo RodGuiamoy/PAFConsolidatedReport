@@ -115,8 +115,7 @@ def main(aws_environment):
                             directly_attached_policies
                         ),
                         "InlinePolicies": ",".join(inline_policies),
-                        "AccountID": account_id,
-                        "test": "test",
+                        "AccountID": account_id
                     }
                 )
 
