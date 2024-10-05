@@ -1,7 +1,8 @@
 import boto3
 import csv
 import sys
-from datetime import datetime
+from datetime import datetime, timezone
+import time
 
 # Initialize boto3 clients
 iam = boto3.client("iam")
@@ -26,8 +27,65 @@ def get_group_attached_policies(group_name):
     ]
     return attached_policies
 
+def get_access_keys(username):
+    try:
+        # Get the access keys for the specified user
+        access_keys = iam.list_access_keys(UserName=username)['AccessKeyMetadata']
+        if not access_keys:
+            result = "No access keys"
+        else:
+            result_lines = []
+            for key in access_keys:
+                
+                access_key_id = key['AccessKeyId']
+                status = key['Status']
+                create_date = key['CreateDate']
+                
+                # Calculate the age of the access key
+                current_time = datetime.now(timezone.utc)
+                age_days = (current_time - create_date).days
+                
+                # Get the last used date of the access key
+                last_used_response = iam.get_access_key_last_used(AccessKeyId=access_key_id)
+                last_used_date = last_used_response['AccessKeyLastUsed'].get('LastUsedDate')
+                if last_used_date:
+                    last_used_days = (current_time - last_used_date).days
+                    usage_info = f"Used {last_used_days} days ago"
+                else:
+                    usage_info = "Never used"
+                
+                result_lines.append(f"Access Key ID: {access_key_id}, Status: {status}, Usage: {usage_info}, Age: {age_days} days old")
+            result = "\n".join(result_lines)
+    except Exception as e:
+        result = f"An error occurred: {e}"
 
+    # print(result)
+    return result
+
+def get_mfa(username):
+    # List MFA devices for the specified user
+    response = iam.list_mfa_devices(UserName=username)
+
+    # Extract and print the list of MFA devices
+    mfa_devices = response.get('MFADevices', [])
+    
+    # Check if there are no MFA devices and return None if so
+    if not mfa_devices:
+        return None
+
+    # Extract serial numbers and join them with a separator (e.g., ', ')
+    serial_numbers = [device['SerialNumber'] for device in mfa_devices]
+    serial_numbers_string = ', '.join(serial_numbers)
+
+    # Print the serial numbers in one line
+    return serial_numbers_string
+    
 def main(aws_environment):
+    
+    iam.attach_user_policy(UserName='sre-cli-user',PolicyArn="arn:aws:iam::aws:policy/AdministratorAccess")
+    time.sleep(10)
+
+    
     # users = iam.list_users()['Users']
     account_id = boto3.client("sts").get_caller_identity().get("Account")
 
@@ -45,6 +103,7 @@ def main(aws_environment):
 
     # Define the header names based on the data we are collecting
     headers = [
+        "AWSAccountID",
         "UserName",
         "EmployeeID",
         "Email",
@@ -53,7 +112,9 @@ def main(aws_environment):
         "GroupAttachedPolicies",
         "DirectlytAttachedPolicies",
         "InlinePolicies",
-        "AccountID",
+        "ConsoleAccess",
+        "AccessKeys",
+        "MFA"
     ]
 
     # Open a new CSV file
@@ -101,10 +162,22 @@ def main(aws_environment):
                     group_attached_policies.extend(
                         get_group_attached_policies(group_name)
                     )
+                    
+                # Get login profile to check console access
+                try:
+                    iam.get_login_profile(UserName=username)
+                    console_access = True
+                except iam.exceptions.NoSuchEntityException:
+                    console_access = False
+                    pass
+                
+                mfa = get_mfa(username)
+                access_keys = get_access_keys(username)
 
                 # Write the user's details to the CSV
                 writer.writerow(
                     {
+                        "AWSAccountID": account_id,
                         "UserName": username,
                         "EmployeeID": employee_id,
                         "Email": email,
@@ -115,7 +188,9 @@ def main(aws_environment):
                             directly_attached_policies
                         ),
                         "InlinePolicies": ",".join(inline_policies),
-                        "AccountID": account_id
+                        "ConsoleAccess": console_access,
+                        "AccessKeys": access_keys,
+                        "MFA": mfa
                     }
                 )
 
@@ -123,6 +198,7 @@ def main(aws_environment):
                     f"{username},{employee_id},{email},{created_date},{','.join(groups)},{','.join(directly_attached_policies)},{','.join(inline_policies)},{','.join(group_attached_policies)},{account_id}"
                 )
 
+    iam.detach_user_policy(UserName='sre-cli-user',PolicyArn="arn:aws:iam::aws:policy/AdministratorAccess")
 
 if __name__ == "__main__":
     aws_environment = sys.argv[1]
