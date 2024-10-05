@@ -20,7 +20,7 @@ def send_email(smtp_server, sender_email, recipient_email, subject, email_body_f
 
         # Connect to the SMTP server
         server = smtplib.SMTP(smtp_server)
-        server.starttls()  # Secure the connection with TLS
+        #server.starttls()  # Secure the connection with TLS
         # server.login(username, password)  # Uncomment if authentication is needed
         
         # Send the email
