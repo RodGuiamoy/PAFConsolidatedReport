@@ -3,7 +3,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import sys
 
-def send_email(smtp_server, sender_email, recipient_email, subject, html_file_path):
+def send_email(smtp_server, sender_email, recipient_email, subject, email_body_file_path):
     try:
         # Create the message container
         msg = MIMEMultipart()
@@ -12,7 +12,7 @@ def send_email(smtp_server, sender_email, recipient_email, subject, html_file_pa
         msg['Subject'] = subject
 
         # Read the HTML content from the file
-        with open(html_file_path, 'r') as file:
+        with open(email_body_file_path, 'r') as file:
             html_content = file.read()
 
         # Attach the HTML content to the email
@@ -49,6 +49,6 @@ smtp_server = sys.argv[1]
 sender_email = sys.argv[2]
 recipient_email = sys.argv[3]
 subject = sys.argv[4]
-html_file_path = sys.argv[5]
+email_body_file_path = sys.argv[5]
 
-send_email(smtp_server, sender_email, recipient_email, subject, html_file_path)
+send_email(smtp_server, sender_email, recipient_email, subject, email_body_file_path)
