@@ -5,36 +5,37 @@ from email.message import EmailMessage
 import sys
 
 def send_email(smtp_server, sender_email, recipient_email, subject, email_body_file_path):
+    # Read email body from the specified file
+    with open(email_body_file_path, 'r') as f:
+        body = f.read()
+
+    # Create the email headers and body
+    msg = MIMEMultipart()
+    msg['From'] = sender_email
+    msg['To'] = recipient_email
+    msg['Subject'] = subject
+
+    # Attach the email body
+    msg.attach(MIMEText(body, 'html'))
+
     try:
-        # Create the message container
-        msg = EmailMessage()
-        msg['From'] = sender_email
-        msg['To'] = recipient_email
-        msg['Subject'] = subject
-
-        # Read the HTML content from the file
-        with open(email_body_file_path, 'r') as file:
-            html_content = file.read()
-
-        # Attach the HTML content to the email
-        # msg.attach(MIMEText(html_content, 'html'))
-        msg.set_content(html_content, subtype="html")
-
-        # # Connect to the SMTP server
-        # server = smtplib.SMTP(smtp_server)
+        # Connect to the SMTP server
+        server = smtplib.SMTP(smtp_server)
         
-        # # Send the email
-        # server.send_message(msg)
-        smtp = smtplib.SMTP(smtp_server)
-        smtp.sendmail(msg)
-        
-        # Close the connection to the SMTP server
-        smtp.quit()
+        # # If SMTP authentication is needed
+        # if smtp_user and smtp_pass:
+        #     server.starttls()  # Upgrade to secure TLS if necessary
+        #     server.login(smtp_user, smtp_pass)
 
-        print("Email sent successfully!")
-    
+        # Send the email
+        server.sendmail(sender_email, recipient_email, msg.as_string())
+        print(f"Email sent successfully to {recipient_email}")
+
     except Exception as e:
-        print(f"Failed to send email: {str(e)}")
+        print(f"Error: {str(e)}")
+
+    finally:
+        server.quit()
 
 # Usage example
 # smtp_server = 'smtp.example.com'
