@@ -21,12 +21,7 @@ def send_email(smtp_server, sender_email, recipient_email, subject, email_body_f
     try:
         # Connect to the SMTP server
         server = smtplib.SMTP(smtp_server)
-        
-        # # If SMTP authentication is needed
-        # if smtp_user and smtp_pass:
-        #     server.starttls()  # Upgrade to secure TLS if necessary
-        #     server.login(smtp_user, smtp_pass)
-
+    
         # Send the email
         server.sendmail(sender_email, recipient_email, msg.as_string())
         print(f"Email sent successfully to {recipient_email}")
@@ -36,13 +31,6 @@ def send_email(smtp_server, sender_email, recipient_email, subject, email_body_f
 
     finally:
         server.quit()
-
-# Usage example
-# smtp_server = 'smtp.example.com'
-# sender_email = 'your_email@example.com'
-# recipient_email = 'recipient_email@example.com'
-# subject = 'Test HTML Email'
-# html_file_path = 'path_to_html_file.html'
 
 if len(sys.argv) < 6:
     print("Usage: python script.py <smtp_server> <sender_email> <recipient_email> <subject> <html_file_path>")
