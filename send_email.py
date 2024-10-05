@@ -1,12 +1,13 @@
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from email.message import EmailMessage
 import sys
 
 def send_email(smtp_server, sender_email, recipient_email, subject, email_body_file_path):
     try:
         # Create the message container
-        msg = MIMEMultipart()
+        msg = EmailMessage()
         msg['From'] = sender_email
         msg['To'] = recipient_email
         msg['Subject'] = subject
@@ -16,18 +17,19 @@ def send_email(smtp_server, sender_email, recipient_email, subject, email_body_f
             html_content = file.read()
 
         # Attach the HTML content to the email
-        msg.attach(MIMEText(html_content, 'html'))
+        # msg.attach(MIMEText(html_content, 'html'))
+        msg.set_content(html_content, subtype="html")
 
-        # Connect to the SMTP server
-        server = smtplib.SMTP(smtp_server)
-        #server.starttls()  # Secure the connection with TLS
-        # server.login(username, password)  # Uncomment if authentication is needed
+        # # Connect to the SMTP server
+        # server = smtplib.SMTP(smtp_server)
         
-        # Send the email
-        server.send_message(msg)
+        # # Send the email
+        # server.send_message(msg)
+        smtp = smtplib.SMTP(smtp_server)
+        smtp.sendmail(msg)
         
         # Close the connection to the SMTP server
-        server.quit()
+        smtp.quit()
 
         print("Email sent successfully!")
     
