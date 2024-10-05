@@ -4,7 +4,6 @@ from email.mime.text import MIMEText
 import sys
 
 def send_email(smtp_server, sender_email, recipient_email, subject, email_body_file_path):
-    print("test")
     try:
         # Create the message container
         msg = MIMEMultipart()
