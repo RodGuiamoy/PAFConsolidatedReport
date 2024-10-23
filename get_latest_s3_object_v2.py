@@ -61,15 +61,10 @@ def download_latest_s3_object(bucket_name, folder_name, regex_pattern, output_fi
 # download_latest_s3_object('rguiamoy-public', r'test/test.*', 'test.txt')
 
 if __name__ == "__main__":
-    # bucket_name = sys.argv[1]
-    # folder_name = sys.argv[2]
-    # regex_pattern = sys.argv[3]
-    # user_report_name = sys.argv[4]
-
-    bucket_name = "sre-puppet-yaml-logs"
-    folder_name = "linux-consolidated-report/"
-    regex_pattern = "Linux-\\d{4}-\\d{2}-\\d{2}"
-    user_report_name = "Linux"
+    bucket_name = sys.argv[1]
+    folder_name = sys.argv[2]
+    regex_pattern = sys.argv[3]
+    user_report_name = sys.argv[4]
 
     # Get the current date
     current_date = datetime.now()
