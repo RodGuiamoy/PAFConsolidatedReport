@@ -4,7 +4,7 @@ Function Invoke-Main {
         $CSVFileName
     )
 
-    $properties = 'Name', 'SamAccountName', 'EmailAddress', 'EmployeeID', 'LastLogonDate', 'MemberOf', 'DistinguishedName', 'whenCreated', 'whenChanged'
+    $properties = 'Name', 'SamAccountName', 'EmailAddress', 'EmployeeID', 'LastLogonDate', 'MemberOf', 'DistinguishedName', 'Description', 'whenCreated', 'whenChanged'
 
     $adUsers = Get-ADUser -Filter * -Properties $properties
     $domain = (Get-CimInstance Win32_ComputerSystem).Domain
