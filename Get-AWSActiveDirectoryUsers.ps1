@@ -21,5 +21,7 @@ Function Invoke-Main {
         @{Name = 'AccountStatus'; Expression = { if ($_.Enabled -eq $True) { 'Enabled' } else { 'Disabled' } } } | `
         Export-CSV $CSVFileName -NoTypeInformation -Encoding UTF8
 
+        Remove-Item $CSVFileName
+
     Write-S3Object -BucketName $BucketName -File $CSVFileName 
 }
