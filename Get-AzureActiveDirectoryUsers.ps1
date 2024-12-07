@@ -21,8 +21,9 @@ Function Invoke-Main {
         @{Name = 'AccountStatus'; Expression = { if ($_.Enabled -eq $True) { 'Enabled' } else { 'Disabled' } } } | `
         Export-CSV $CSVFileName -NoTypeInformation -Encoding UTF8
 
-        Remove-Item $CSVFileName
-
     $cmd = 'curl -X PUT -T "{0}" --ssl-no-revoke "{1}"' -f $CSVFileName, $s3UploadUrl
     cmd /c $cmd
+
+    Remove-Item $CSVFileName
+
 }
